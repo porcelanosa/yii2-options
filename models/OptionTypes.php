@@ -51,10 +51,10 @@ class OptionTypes extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
-     * @return \app\modules\admin\models\query\OptionTypesQuery the active query used by this AR class.
+     * @return \porcelanosa\yii2options\models\OptionTypesQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new \app\modules\admin\models\query\OptionTypesQuery(get_called_class());
+        return new \porcelanosa\yii2options\models\query\OptionTypesQuery(get_called_class());
     }
 }

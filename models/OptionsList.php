@@ -94,9 +94,9 @@
 		
 		/**
 		 * @inheritdoc
-		 * @return \app\modules\admin\models\query\OptionsListQuery the active query used by this AR class.
+		 * @return \porcelanosa\yii2options\models\OptionsListQuery the active query used by this AR class.
 		 */
 		public static function find() {
-			return new \app\modules\admin\models\query\OptionsListQuery( get_called_class() );
+			return new \porcelanosa\yii2options\models\query\OptionsListQuery( get_called_class() );
 		}
 	}
