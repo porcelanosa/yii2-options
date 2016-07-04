@@ -1,10 +1,10 @@
 <?php
 
-namespace app\modules\admin\controllers;
+namespace porcelanosa\yii2options\controllers;
 
 use Yii;
-use app\modules\admin\models\OptionTypes;
-use app\modules\admin\models\search\OptionTypesSearch;
+use porcelanosa\yii2options\models\OptionTypes;
+use porcelanosa\yii2options\models\search\OptionTypesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

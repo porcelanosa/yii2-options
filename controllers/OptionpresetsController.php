@@ -1,10 +1,10 @@
 <?php
 
-namespace app\modules\admin\controllers;
+namespace porcelanosa\yii2options\controllers;
 
 use Yii;
-use app\modules\admin\models\OptionPresets;
-use app\modules\admin\models\search\OptionPresetsSearch;
+use porcelanosa\yii2options\models\OptionPresets;
+use porcelanosa\yii2options\models\search\OptionPresetsSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

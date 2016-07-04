@@ -23,7 +23,7 @@ var vmPresets = new Vue({
     // Methods we want to use in our application are registered here
     methods: {
         fetchPresets: function () {
-            this.$http.post('/admin/presetapi/presets', {id: presetId}, function (data, status, request) {
+            this.$http.post('/options/presetapi/presets', {id: presetId}, function (data, status, request) {
                 // set data on vm
                 this.$set('presets', data);
 
@@ -42,7 +42,7 @@ var vmPresets = new Vue({
         },
         addPreset: function (event) {
             event.preventDefault();
-            this.$http.post('/admin/presetapi/create', this.newPreset, function (data, status, request) {
+            this.$http.post('/options/presetapi/create', this.newPreset, function (data, status, request) {
                 console.log(data);
                 vmPresets.newPreset.id = data.id;
             }).then(
@@ -70,7 +70,7 @@ var vmPresets = new Vue({
 
             event.preventDefault();
             if (preset.id) {
-                this.$http.put('/admin/presetapi/update/' + preset.id, preset)
+                this.$http.put('/options/presetapi/update/' + preset.id, preset)
                     .success(function (response) {
                         this.edited = false;
                         this.editedPreset = null;
@@ -87,7 +87,7 @@ var vmPresets = new Vue({
         },
         removePreset: function (preset) {
             if (confirm("Вы уверены что хотите удалить этот значение?")) {
-                this.$http.delete('/admin/presetapi/delete/' + preset.id, this.block)
+                this.$http.delete('/options/presetapi/delete/' + preset.id, this.block)
                     .then(
                         function (response) {
                             this.presets.$remove(preset);
@@ -130,7 +130,7 @@ $(document).ready(function () {
             $.ajax({
                 data: data,
                 type: 'POST',
-                url: '/admin/presetapi/sort'
+                url: '/options/presetapi/sort'
             });
         }
     });

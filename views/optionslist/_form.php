@@ -234,7 +234,7 @@
 
 <? if (!$model->isNewRecord): ?>
 	<?
-	$this->registerJsFile('@vendor/porcelanosa/yii2-options/assets/js/optionsPreset.js', [
+	/*$this->registerJsFile('@vendor/porcelanosa/yii2-options/assets/js/optionsPreset.js', [
 		'depends'  => [
 			'yii\web\JqueryAsset',
 			'\app\assets\VuejsAsset',
@@ -252,6 +252,7 @@
 			'\yii\jui\JuiAsset'
 		],
 		'position' => \yii\web\View::POS_END
-	], 'sortable');
+	], 'sortable');*/
+	\porcelanosa\yii2options\OptionsAsset::register($this);
 	?>
 <? endif; ?>

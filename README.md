@@ -50,5 +50,5 @@ After you downloaded and configured yii2-options, the last thing you need to do 
 the migration:
 
 ```bash
-$ php yii migrate/up --migrationPath=@yii/rbac/migrations
+$ php yii migrate/up --migrationPath=@yii/options/migrations
 ```

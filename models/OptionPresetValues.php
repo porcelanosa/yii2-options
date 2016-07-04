@@ -3,7 +3,7 @@
 	namespace porcelanosa\yii2options\models;
 	
 	use Yii;
-	
+	use \porcelanosa\yii2options\models\query\OptionPresetValuesQuery;
 	/**
 	 * This is the model class for table "option_preset_values".
 	 *
@@ -44,9 +44,9 @@
 		
 		/**
 		 * @inheritdoc
-		 * @return \app\modules\admin\models\query\OptionPresetValuesQuery the active query used by this AR class.
+		 * @return OptionPresetValuesQuery the active query used by this AR class.
 		 */
 		public static function find() {
-			return new \app\modules\admin\models\query\OptionPresetValuesQuery( get_called_class() );
+			return new OptionPresetValuesQuery( get_called_class() );
 		}
 	}

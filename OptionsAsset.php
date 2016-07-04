@@ -8,13 +8,17 @@
 	class OptionsAsset extends AssetBundle {
 		public $sourcePath = '@vendor/porcelanosa/yii2-options/assets';
 		public $js = [
-			'options.js',
+			'js/options.js',
+			'js/optionsPreset.js',
+			'js/Sortable.js',
 		];
 		public $css = [
-			'options.css'
+			'css/options.css'
 		];
 		public $depends = [
 			'yii\web\JqueryAsset',
+			'\app\assets\VuejsAsset',
+			'\app\assets\VueResourceAsset',
 			'yii\jui\JuiAsset'
 		];
 		
