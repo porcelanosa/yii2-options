@@ -46,7 +46,6 @@ Add options module to both web and console config files as follows:
 
 Step 3: Updating database schema
 --------------------------------
-
 After you downloaded and configured yii2-options, the last thing you need to do is updating your database schema by applying
 the migration:
 
