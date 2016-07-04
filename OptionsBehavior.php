@@ -1,5 +1,5 @@
 <?php
-	namespace app\behaviors\options;
+	namespace porcelanosa\yii2Options;
 
 	use app\components\helpers\MyHelper;
 	use app\modules\admin\models\OptionMultiple;
@@ -17,10 +17,6 @@
 
 
 	use yii\web\UploadedFile;
-	use yii\web\View;
-
-
-	use vova07\imperavi\Widget as Redactor;
 
 	/*
 	 *

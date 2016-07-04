@@ -1,5 +1,5 @@
 <?php
-	namespace app\behaviors\options;
+	namespace porcelanosa\yii2Options;
 	
 	use app\components\helpers\MyHelper;
 	use app\modules\admin\models\Cats;
