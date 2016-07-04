@@ -1,5 +1,4 @@
 <?php
-	
 	namespace porcelanosa\yii2options;
 	
 	use app\components\helpers\MyHelper;

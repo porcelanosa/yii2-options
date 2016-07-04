@@ -6,7 +6,7 @@
 	use yii\web\AssetBundle;
 	
 	class OptionsAsset extends AssetBundle {
-		public $sourcePath = '@app/behaviors/options/assets';
+		public $sourcePath = '@vendor/porcelanosa/yii2-options/assets';
 		public $js = [
 			'options.js',
 		];
