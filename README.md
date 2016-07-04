@@ -15,7 +15,7 @@ Add yii2-options to the require section of your **composer.json** file:
 ```js
 {
     "require": {
-        "dektrium/yii2-options": "dev-master"
+        "porcelanosa/yii2-options": "dev-master"
     }
 }
 ```
