@@ -1,6 +1,6 @@
 <?php
 	
-	namespace porcelanosa\yii2Options;
+	namespace porcelanosa\yii2options;
 
 use app\components\helpers\MyHelper;
 use app\modules\admin\models\OptionPresetValues;

@@ -1,6 +1,6 @@
 <?php
 	
-	namespace porcelanosa\yii2Options;
+	namespace porcelanosa\yii2options;
 
 use Yii;
 use yii\web\AssetBundle;
