@@ -50,5 +50,12 @@ After you downloaded and configured yii2-options, the last thing you need to do 
 the migration:
 
 ```bash
-$ php yii migrate/up --migrationPath=@yii/options/migrations
+$ php yii migrate/up --migrationPath=@vendor/porcelanosa/yii2-options/migrations
+```
+
+Menu items
+```php
+
+['label' => Yii::t('app', 'ADMIN_NAV_STATUS_TYPES'), 'url' => ['/options/optiontypes/index']],
+['label' => Yii::t('app', 'ADMIN_NAV_OPTIONS_LIST'), 'url' => ['/options/optionslist/index']],
 ```
