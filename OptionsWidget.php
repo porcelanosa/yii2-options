@@ -2,9 +2,9 @@
 	namespace porcelanosa\yii2options;
 	
 	use app\components\helpers\MyHelper;
-	use app\modules\admin\models\OptionPresetValues;
-	use app\modules\admin\models\Options;
-	use app\modules\admin\models\RichTexts;
+	use porcelanosa\yii2options\models\OptionPresetValues;
+	use porcelanosa\yii2options\models\Options;
+	use porcelanosa\yii2options\models\RichTexts;
 	use Yii;
 	use yii\base\Exception;
 	use yii\base\Widget;
@@ -13,6 +13,7 @@
 	use yii\helpers\Json;
 	use yii\helpers\Url;
 	use yii\helpers\Html;
+	
 	use vova07\imperavi\Widget as Redactor;
 	
 	/**

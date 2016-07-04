@@ -1,6 +1,6 @@
 <?php
-
-namespace app\modules\admin\models;
+	
+	namespace porcelanosa\yii2options;
 
 use Yii;
 
