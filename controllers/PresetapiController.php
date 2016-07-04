@@ -25,7 +25,7 @@ use yii\web\Controller;
 class PresetapiController extends ActiveController
 {
 
-    public $modelClass = 'app\modules\admin\models\OptionPresetValues';
+    public $modelClass = 'porcelanosa\yii2options\models\OptionPresetValues';
 
     public function actions()
     {
