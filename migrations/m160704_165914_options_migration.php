@@ -34,14 +34,14 @@ class m160704_165914_options_migration extends Migration
 		    'name' => $this->string(255)->notNull(),
 		    'short_name' => $this->string(255)->notNull(),
 		    'sort' => $this->integer(),
-		    'active' => $this->integer(),
+		    'active' => $this->integer()->defaultValue(1),
 	    ], $tableOptions);
 	    $this->createTable('{{%option_preset_values}}', [
 		    'id' => $this->primaryKey(),
 		    'preset_id' => $this->integer(),
 		    'value' => $this->string(255)->notNull(),
 		    'sort' => $this->integer(),
-		    'active' => $this->integer(),
+		    'active' => $this->integer()->defaultValue(1),
 	    ], $tableOptions);
 	    $this->createTable('{{%rich_texts}}', [
 		    'id' => $this->primaryKey(),
@@ -57,6 +57,7 @@ class m160704_165914_options_migration extends Migration
 		    'is_required' => $this->integer(),
 		    'in_filter' => $this->integer(),
 		    'type_id' => $this->integer(),
+		    'parent_id' => $this->integer(),
 		    'preset_id' => $this->integer(),
 		    'minLenght' => $this->integer(),
 		    'maxLenght' => $this->integer(),

@@ -2,12 +2,12 @@
 
 namespace porcelanosa\yii2options\controllers;
 
-use app\components\helpers\MyHelper;
+use porcelanosa\yii2options\components\helpers\MyHelper;
 use porcelanosa\yii2options\models\OptionPresets;
 use porcelanosa\yii2options\models\OptionTypes;
-use Yii;
 use porcelanosa\yii2options\models\OptionsList;
 use porcelanosa\yii2options\models\search\OptionsListSearch;
+use Yii;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

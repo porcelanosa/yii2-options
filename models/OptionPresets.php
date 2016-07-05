@@ -14,6 +14,7 @@
 	 * @property integer $defaultPresetValue_id
 	 * @property integer $sort
 	 * @property integer $active
+	 * @property OptionPresetValues $optionPresetValues
 	 */
 	class OptionPresets extends \yii\db\ActiveRecord {
 		/**

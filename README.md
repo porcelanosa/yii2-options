@@ -1,3 +1,5 @@
+**WARNING! UNDER DEVELOPMENT**
+
 Installation
 ============
 
@@ -59,3 +61,26 @@ Menu items
 ['label' => Yii::t('app', 'ADMIN_NAV_STATUS_TYPES'), 'url' => ['/options/optiontypes/index']],
 ['label' => Yii::t('app', 'ADMIN_NAV_OPTIONS_LIST'), 'url' => ['/options/optionslist/index']],
 ```
+
+Step 4: Adjust models
+---------------------
+Add behavior
+```php
+use porcelanosa\yii2options\components\helpers\MyHelper;
+public function behaviors()
+{
+    return [
+        'optionsBehavior' => [
+            'class' => OptionsBehavior::className(),
+            'model_name' => MyHelper::modelFromNamespace($this::className()), // convert className to model name without namespace
+        ],
+}
+```
+Add binding paramters
+```php
+public $modelFrontName = 'Категории'; //if not define $modelFrontName - not show in dropdown list in optionslist controller
+		
+public $childModels = [
+    'Items'=>'Товары в категории',
+];
+`

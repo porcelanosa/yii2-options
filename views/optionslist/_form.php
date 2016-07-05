@@ -253,6 +253,6 @@
 		],
 		'position' => \yii\web\View::POS_END
 	], 'sortable');*/
-	\porcelanosa\yii2options\OptionsAsset::register($this);
+	\porcelanosa\yii2options\assets\OptionsAsset::register($this);
 	?>
 <? endif; ?>

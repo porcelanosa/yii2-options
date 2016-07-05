@@ -1,7 +1,9 @@
 <?php
 	namespace porcelanosa\yii2options;
 	
-	use app\components\helpers\MyHelper;
+	use porcelanosa\yii2options\components\helpers\MyHelper;
+	use porcelanosa\yii2options\models\Options;
+	use porcelanosa\yii2options\models\OptionsList;
 	use porcelanosa\yii2options\models\OptionMultiple;
 	use porcelanosa\yii2options\models\OptionPresetValues;
 	use porcelanosa\yii2options\models\RichTexts;
@@ -12,8 +14,6 @@
 	
 	
 	use yii\web\UploadedFile;
-	use porcelanosa\yii2options\models\Options;
-	use porcelanosa\yii2options\models\OptionsList;
 	/*
 	 *
 	 * */

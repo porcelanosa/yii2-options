@@ -1,6 +1,6 @@
 <?php
 	
-	namespace porcelanosa\yii2options;
+	namespace porcelanosa\yii2options\assets;
 	
 	use Yii;
 	use yii\web\AssetBundle;
@@ -17,8 +17,9 @@
 		];
 		public $depends = [
 			'yii\web\JqueryAsset',
-			'\app\assets\VuejsAsset',
-			'\app\assets\VueResourceAsset',
+			'porcelanosa\yii2options\assets\VuejsAsset',
+			'porcelanosa\yii2options\assets\VueResourceAsset',
+			'porcelanosa\yii2options\assets\SortablejsAsset',
 			'yii\jui\JuiAsset'
 		];
 		

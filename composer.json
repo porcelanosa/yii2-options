@@ -18,7 +18,11 @@
   ],
   "require": {
     "php": ">=5.4.0",
-    "yiisoft/yii2": "*"
+    "yiisoft/yii2": "*",
+    "vova07/yii2-imperavi-widget": "*",
+    "bower-asset/sortablejs": "*",
+    "bower-asset/vue": "*",
+    "bower-asset/vue-resource": "*"
   },
   "autoload": {
     "psr-4": {
