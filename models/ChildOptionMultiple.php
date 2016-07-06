@@ -1,5 +1,5 @@
 <?php
-	namespace porcelanosa\yii2options;
+	namespace porcelanosa\yii2options\models;
 	
 	use Yii;
 	

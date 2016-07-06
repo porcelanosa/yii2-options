@@ -6,13 +6,13 @@
 	 * Time: 8:33
 	 */
 	
-	namespace app\modules\admin\controllers;
+	namespace porcelanosa\yii2options\controllers;
 	
 	
-	use app\components\helpers\MyHelper;
+	use porcelanosa\yii2options\components\helpers\MyHelper;
 	use app\modules\admin\models\Cats;
-	use app\modules\admin\models\ModelsOptionsList;
-	use app\modules\admin\models\OptionsList;
+	use porcelanosa\yii2options\models\ModelsOptionsList;
+	use porcelanosa\yii2options\models\OptionsList;
 	use yii\db\ActiveRecord;
 	use yii\web\Controller;
 	use yii\helpers\ArrayHelper;

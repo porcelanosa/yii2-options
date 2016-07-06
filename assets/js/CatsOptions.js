@@ -30,7 +30,7 @@ var vmOptionsCatsList = new Vue({
     // Methods we want to use in our application are registered here
     methods: {
         fetchOptions: function () {
-            this.$http.post('/admin/catsoptions/get-options-for-child', {model_name: 'Cats-Items'}, function (data, status, request) {
+            this.$http.post('/options/catsoptions/get-options-for-child', {model_name: 'Cats-Items'}, function (data, status, request) {
                 // set data on vm
                 this.$set('Options', data);
 
@@ -56,7 +56,7 @@ var vmOptionsCatsList = new Vue({
                 sortableOptions.options["group"].pull = "clone"
             }
             this.currentCatId = id;
-            this.$http.post('/admin/catsoptions/get-options-by-cat-id', {model_id: id}, function (data, status, request) {
+            this.$http.post('/options/catsoptions/get-options-by-cat-id', {model_id: id}, function (data, status, request) {
                 this.$set('CurrentOptions', data);
             }).then(function () {
                 },
@@ -64,7 +64,7 @@ var vmOptionsCatsList = new Vue({
                     console.log(error);
                 }
             );
-            this.$http.post('/admin/catsoptions/get-all-parent-options', {model_id: id}, function (data, status, request) {
+            this.$http.post('/options/catsoptions/get-all-parent-options', {model_id: id}, function (data, status, request) {
                 this.$set('ParentOptions', data);
             }).then(function () {
                 },
@@ -78,7 +78,7 @@ var vmOptionsCatsList = new Vue({
             event.preventDefault();
             if (optionsArray.length > 0) {
                 this.$http.post(
-                    '/admin/catsoptions/update',
+                    '/options/catsoptions/update',
                     {
                         cat_id: this.currentCatId,
                         options: optionsArray
@@ -98,7 +98,7 @@ var vmOptionsCatsList = new Vue({
 
             if (confirm("Вы уверены что хотите удалить этот значение?")) {
                 this.$http.post(
-                    '/admin/catsoptions/delete-option',
+                    '/options/catsoptions/delete-option',
                     {
                         option_id: item.option_id,
                         model_id: this.currentCatId
@@ -155,7 +155,7 @@ var vmOptions = new Vue({
     // Methods we want to use in our application are registered here
     methods: {
         fetchPresets: function () {
-            this.$http.post('/admin/presetapi/presets', {id: presetId}, function (data, status, request) {
+            this.$http.post('/options/presetapi/presets', {id: presetId}, function (data, status, request) {
                 // set data on vm
                 this.$set('presets', data);
 
@@ -174,7 +174,7 @@ var vmOptions = new Vue({
         },
         addPreset: function (event) {
             event.preventDefault();
-            this.$http.post('/admin/presetapi/create', this.newPreset, function (data, status, request) {
+            this.$http.post('/options/presetapi/create', this.newPreset, function (data, status, request) {
                 console.log(data);
                 vmOptionsCatsList.newPreset.id = data.id;
             }).then(
@@ -213,7 +213,7 @@ var vmOptions = new Vue({
                 console.log(arr);
 
                 this.$http.post(
-                    '/admin/childoptionslist/update',
+                    '/options/childoptionslist/update',
                     {
                         //arr: arr,
                         cats: catsArray,
@@ -228,7 +228,7 @@ var vmOptions = new Vue({
                     function (error) {
 
                     });
-                /*this.$http.put('/admin/childoptionslist/update/' + catsArray.concat(optionsArray))
+                /*this.$http.put('/options/childoptionslist/update/' + catsArray.concat(optionsArray))
                  .success(function (response) {
                  this.edited = false;
                  this.editedPreset = null;
@@ -245,7 +245,7 @@ var vmOptions = new Vue({
         },
         removePreset: function (preset) {
             if (confirm("Вы уверены что хотите удалить этот значение?")) {
-                this.$http.delete('/admin/presetapi/delete/' + preset.id, this.block)
+                this.$http.delete('/options/presetapi/delete/' + preset.id, this.block)
                     .then(
                         function (response) {
                             this.presets.$remove(preset);

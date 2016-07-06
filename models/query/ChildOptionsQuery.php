@@ -25,7 +25,7 @@ class ChildOptionsQuery extends \yii\db\ActiveQuery
 
     /**
      * @inheritdoc
-     * @return \app\modules\admin\models\ChildOptions|array|null
+     * @return \porcelanosa\yii2options\models\ChildOptions|array|null
      */
     public function one($db = null)
     {

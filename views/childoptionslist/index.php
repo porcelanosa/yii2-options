@@ -1,9 +1,9 @@
 <?
 	use yii\helpers\Html;
-	use app\components\helpers\MyHelper;
+	use porcelanosa\yii2options\components\helpers\MyHelper;
 	
 	/**
-	 * @var $optionsList \app\modules\admin\models\OptionsList[]
+	 * @var $optionsList \porcelanosa\yii2options\models\OptionsList[]
 	 */
 ?>
 <?

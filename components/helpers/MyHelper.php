@@ -31,7 +31,7 @@
 			$parentModel      = new $namespace();
 			$childModels      = $parentModel->childModels; // массив дочерних классов
 			foreach ($childModels as $chModel => $chModelName) {
-				var_dump($chModel);
+				//var_dump($chModel);
 				$childModelsArray[ $parentModelName . '-' . $chModel ] = $chModelName;
 			}
 

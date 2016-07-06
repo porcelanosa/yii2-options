@@ -34,7 +34,7 @@
 		
 		public $options = array();
 		
-		protected $options_string = '';
+		public $options_string = '';
 		
 		public function init() {
 			parent::init();

@@ -3,10 +3,15 @@
 	use app\components\helpers\MyHelper;
 	
 	/**
-	 * @var $optionsList       \app\modules\admin\models\OptionsList[]
+	 * @var $optionsList       \porcelanosa\yii2options\models\OptionsList[]
 	 * @var $model_name        string
-	 * @var $CommonOptionsList \app\modules\admin\models\OptionsList[]
+	 * @var $CommonOptionsList \porcelanosa\yii2options\models\OptionsList[]
 	 */
+	
+	$this->title = Yii::t('app', 'CAts Options list binding');
+	$this->params['breadcrumbs'][] = $this->title;
+	
+	$cat_name = isset($_GET['cat_name'])?$_GET['cat_name']:'Cats';
 ?>
 	<style>
 		.sortable-ghost {
@@ -29,30 +34,35 @@
 		#cat-list li {
 			cursor: pointer;
 		}
+		#options-list li {
+			cursor: w-resize;
+		}
 		.selected-cat {
 			font-family: 'Roboto Condensed', sans-serif;
 			font-weight: 700;
 		}
 	</style>
 <?
-	$catTree = MyHelper::getTree(MyHelper::ADMIN_MODEL_NAMESPACE . 'Cats', 'parent_id')
+	$catTree = MyHelper::getTree(MyHelper::ADMIN_MODEL_NAMESPACE . $cat_name, 'parent_id')
 ?>
 	<div class="row" id="CatsOptionsMain" data-modelName="<?=$model_name?>">
 
-		<div class="col-md-2">
+		<div class="col-md-4">
 			<div class="row">
 				<div class="col-md-12">
-					<ul id="cat-list">
-						<? foreach($catTree as $id => $cTr): ?>
-							<li data-id="<?=$id?>" v-on:click="selectCat">
-								<?=$cTr?>
+					<!--<ul id="cat-list">
+						<?/* foreach($catTree as $id => $cTr): */?>
+							<li data-id="<?/*=$id*/?>" v-on:click="selectCat">
+								<?/*=$cTr*/?>
 							</li>
-						<? endforeach; ?>
-					</ul>
+						<?/* endforeach; */?>
+					</ul>-->
+					
+					<?=MyHelper::getTreeUL(MyHelper::ADMIN_MODEL_NAMESPACE . $cat_name, 'parent_id', 0, 'id="cat-list"', 'v-on:click="selectCat"')?>
 				</div>
 			</div>
 		</div>
-		<div class="col-md-8">
+		<div class="col-md-6">
 			<div class="row">
 				<div class="col-md-6">
 					<!--<h4>Общие параметры</h4>
@@ -98,16 +108,14 @@
 	</div>
 
 
-<?
-	/* $this->registerJsFile('/js/admin/Sortable.js', [
+<?/* $this->registerJsFile('/js/admin/Sortable.js', [
 	'depends'  => [
 		'yii\web\JqueryAsset',
 	],
 	'position' => \yii\web\View::POS_END
-], 'Sortable-js');*/
-?>
-
-<? $this->registerJsFile('/js/admin/sortOptions.js', [
+], 'Sortable-js');*/?>
+<?/*$this->registerJsFile('vendor\porcelanosa\yii2options/assets/js/sortOptions.js',
+	[
 	'depends'  => [
 		'\app\assets\SortablejsAsset',
 		'\app\assets\VuejsAsset',
@@ -116,8 +124,8 @@
 	],
 	'position' => \yii\web\View::POS_END
 ], 'sort-options-js');
-?>
-<? $this->registerJsFile('/js/admin/CatsOptions.js', [
+*/?>
+<?/* $this->registerJsFile('/js/admin/CatsOptions.js', [
 	'depends'  => [
 		'\app\assets\SortablejsAsset',
 		'\app\assets\VuejsAsset',
@@ -126,4 +134,5 @@
 	],
 	'position' => \yii\web\View::POS_END
 ], 'options-cats-list-js');
-?>
+	*/?>
+<?\porcelanosa\yii2options\assets\CatsOptionsAsset::register($this);	?>

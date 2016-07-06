@@ -2,7 +2,7 @@
 
 	use yii\helpers\Html;
 	use yii\widgets\ActiveForm;
-	use \app\components\helpers\MyHelper;
+	use porcelanosa\yii2options\components\helpers\MyHelper;
 	use \yii\helpers\ArrayHelper;
 
 	/* @var $this yii\web\View */
@@ -16,15 +16,15 @@
 
 	<?
 		$model_array = [];
-		$path        = Yii::getAlias('@app') . '/modules/admin/models/*.php';
+		//$path        = Yii::getAlias('@app/modules/admin/models/*.php');
+		//$modelNamespace = 'app\modules\admin\models\\';
+		$path  = Yii::getAlias(\Yii::$app->getModule('options')->model_path);
+		$modelNamespace = Yii::getAlias(\Yii::$app->getModule('options')->modelNamespace);
+		$pattern    = '/.+\//i';
 		//print_r(glob($path));
 		foreach (glob($path) as $filename) {
-			$pattern    = '/.+\//i';
-			$model_name =
-				'app\modules\admin\models\\' . preg_replace($pattern, '', str_replace(".php", "", $filename));
-			/**
-			 * @var $m \app\modules\admin\models\Cats
-			 */
+			$model_name = $modelNamespace . preg_replace($pattern, '', str_replace(".php", "", $filename));
+				
 			$m = new $model_name();
 			/* имя модели без namespace */
 			$clearModelName = MyHelper::modelFromNamespace($model_name);
@@ -233,26 +233,5 @@
 
 
 <? if (!$model->isNewRecord): ?>
-	<?
-	/*$this->registerJsFile('@vendor/porcelanosa/yii2-options/assets/js/optionsPreset.js', [
-		'depends'  => [
-			'yii\web\JqueryAsset',
-			'\app\assets\VuejsAsset',
-			'\app\assets\VueResourceAsset',
-			'\yii\jui\JuiAsset'
-		],
-		'position' => \yii\web\View::POS_END
-	], 'vuejs-preset');
-
-	$this->registerJsFile('@vendor/porcelanosa/yii2-options/assets/js/Sortable.js', [
-		'depends'  => [
-			'yii\web\JqueryAsset',
-			'\app\assets\VuejsAsset',
-			'\app\assets\VueResourceAsset',
-			'\yii\jui\JuiAsset'
-		],
-		'position' => \yii\web\View::POS_END
-	], 'sortable');*/
-	\porcelanosa\yii2options\assets\OptionsAsset::register($this);
-	?>
+	<?	\porcelanosa\yii2options\assets\OptionsAsset::register($this);	?>
 <? endif; ?>

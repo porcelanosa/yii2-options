@@ -13,7 +13,9 @@
 	use yii\db\ActiveRecord;
 	
 	
+	use yii\helpers\ArrayHelper;
 	use yii\web\UploadedFile;
+	
 	/*
 	 *
 	 * */
@@ -21,16 +23,12 @@
 	class OptionsBehavior
 		extends AttributeBehavior {
 		
-		public $model_name = 'Items';
-		public $options_string = '';
+		public $model_name = '';
 		public $uploadImagePath = '/uploads/items/';
 		
 		public function events() {
 			return [
 				ActiveRecord::EVENT_BEFORE_UPDATE => 'saveOptions',
-				//Controller::EVENT_BEFORE_ACTION   => 'fetchOptions',
-				/*$this->owner::EVENT_INIT          => 'fetchOptions',
-				{$this->model_name.'Controller'}::EVENT_INIT          => 'fetchOptions',*/
 			];
 		}
 		
@@ -140,14 +138,11 @@
 		
 		
 		/**
-		 * Определяем есть ли у работы такой статус и если есть, то возвращаем его
-		 *
+		 * Определяем есть ли такой статус и если есть, то возвращаем его
 		 * @param $option_id integer
-		 *
 		 * @return mixed
 		 */
-		public
-		function getOptionValueById(
+		public function getOptionValueById(
 			$option_id
 		) {
 			
@@ -160,28 +155,50 @@
 						'model'     => $this->model_name,
 						'option_id' => $option_id
 					]
-				)->one()
-			;
-			//var_dump($cats_statuses['value']);
-			
-			/*if (is_null($works_statuses['value'])) {
-				return false;
-			} else {
-			}*/
+				)->one();
 			
 			return $option['value'];
 			
 		}
-		
 		/**
-		 * Определяем есть ли у работы такой статус и если есть, то возвращаем его
-		 *
-		 * @param $option_id integer
-		 *
+		 * Получаем значение параметра конкретной модели по алиасу
+		 * @param $alias string
 		 * @return mixed
 		 */
-		public
-		function getOptionValueByOptionId(
+		public function getOptionValueByAlias($alias) {
+			/**
+			 * @var $optionList OptionsList
+			 * @var $option Options
+			*/
+			$optionList = OptionsList::find()->where(['alias'=>$alias])->one();
+			$option = Options::find()
+				->where(
+					[
+						'model_id'  => $this->owner->id,
+						'model'     => $this->model_name,
+						'option_id' => $optionList->id
+					]
+				)->one();
+			if(in_array($optionList->type->alias, MyHelper::TYPES_WITH_PRESET_ARRAY)) {
+				$return = $optionList->preset->value($option->value);
+			}
+			elseif(in_array($optionList->type->alias, MyHelper::TYPES_WITH_MULTIPLE_PRESET_ARRAY)) {
+				$optionM = OptionMultiple::find()->where( [ 'value' => $option->value ] )->one();
+				$return = $optionList->preset->value($optionM->value);
+			}
+			else {
+				$return = $option->value;
+			}
+			return $return;
+			
+		}
+		
+		/**
+		 * Определяем есть ли такой статус и если есть, то возвращаем его
+		 * @param $option_id integer
+		 * @return mixed
+		 */
+		public function getOptionValueByOptionId(
 			$option_id
 		) {
 			
@@ -212,8 +229,7 @@
 		 *
 		 * @return mixed
 		 */
-		public
-		function getOptionMultipleValueByOptionId(
+		public function getOptionMultipleValueByOptionId(
 			$option_id
 		) {
 			$return_array = [ ];
@@ -240,8 +256,7 @@
 		 *
 		 * @return boolean
 		 */
-		public
-		function ifOptionExist(
+		public function ifOptionExist(
 			$option_id
 		) {
 			
@@ -273,8 +288,7 @@
 		 *
 		 * @return mixed
 		 */
-		public
-		function getStatusValueByStatusIdDD(
+		public function getStatusValueByStatusIdDD(
 			$status_id
 		) {
 			$value  = $this->getStatusValueByStatusId( $status_id );

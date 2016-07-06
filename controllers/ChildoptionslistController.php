@@ -1,15 +1,15 @@
 <?
-	namespace app\modules\admin\controllers;
+	namespace porcelanosa\yii2options\controllers;
 
 	use app\modules\admin\models\Cats;
-	use app\modules\admin\models\OptionsList;
+	use porcelanosa\yii2options\models\OptionsList;
 	use Yii;
 	use yii\web\Controller;
 	use yii\web\NotFoundHttpException;
 	use yii\filters\VerbFilter;
 	use yii\helpers\ArrayHelper;
 
-	use app\modules\admin\models\ModelsOptionsList;
+	use porcelanosa\yii2options\models\ModelsOptionsList;
 
 	/**
 	 * BrandsController implements the CRUD actions for Brands model.

@@ -1,6 +1,6 @@
 <?php
 	
-	namespace porcelanosa\yii2options;
+	namespace porcelanosa\yii2options\models;
 	
 	use Yii;
 	
@@ -46,9 +46,9 @@
 		
 		/**
 		 * @inheritdoc
-		 * @return \app\modules\admin\models\query\ChildOptionsQuery the active query used by this AR class.
+		 * @return \porcelanosa\yii2options\models\query\ChildOptionsQuery the active query used by this AR class.
 		 */
 		public static function find() {
-			return new \app\modules\admin\models\query\ChildOptionsQuery( get_called_class() );
+			return new \porcelanosa\yii2options\models\query\ChildOptionsQuery( get_called_class() );
 		}
 	}

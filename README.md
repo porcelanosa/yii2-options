@@ -39,6 +39,9 @@ Add options module to both web and console config files as follows:
     ...
     'options' => [
         'class' => 'porcelanosa\yii2options\Module',
+        'layout' => '@app/modules/admin/views/layouts/main',
+        'model_path' => '@app/modules/admin/models/*.php', // models php files
+        'modelNamespace' => 'app\modules\admin\models\\' // models namespace
     ],
     ...
 ],
@@ -66,13 +69,18 @@ Step 4: Adjust models
 ---------------------
 Add behavior
 ```php
+use porcelanosa\yii2options\models\Options;
+use porcelanosa\yii2options\OptionsBehavior;
+use porcelanosa\yii2options\ChildOptionsBehavior;
 use porcelanosa\yii2options\components\helpers\MyHelper;
+
 public function behaviors()
 {
     return [
         'optionsBehavior' => [
             'class' => OptionsBehavior::className(),
             'model_name' => MyHelper::modelFromNamespace($this::className()), // convert className to model name without namespace
+            'uploadImagePath' => '/uploads/items/'
         ],
 }
 ```
@@ -83,4 +91,18 @@ public $modelFrontName = 'Категории'; //if not define $modelFrontName -
 public $childModels = [
     'Items'=>'Товары в категории',
 ];
-`
+```
+
+
+Step 5: Show options in admin view
+-----------------------------------
+```php
+<? echo
+OptionsWidget::widget(
+    [
+        'model'        => $model,
+        'behaviorName' => 'optionsBehavior'
+    ] 
+);
+?>
+```
