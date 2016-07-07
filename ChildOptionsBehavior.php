@@ -226,7 +226,7 @@
 
 		
 		/**
-		 * @return \yii\db\ActiveQuery
+		 * @return OptionsList
 		 */
 		public function getChildOptionsList($cat_id) {
 			
@@ -236,8 +236,7 @@
 				'IN',
 				'model_id',
 				$parent_ids
-			])->asArray()->all()
-			;
+			])->asArray()->all();
 
 			$options = OptionsList::find()
 			                      ->where(
@@ -248,8 +247,7 @@
 				                      ]
 			                      )
 			                      ->andWhere(['model' => $this->parent_model_name . '-' . $this->model_name,])
-			                      ->all()
-			;
+			                      ->all();
 
 			return $options;
 		}
@@ -278,7 +276,8 @@
 			$this_model   = $model::findOne(['id' => $cat_id]);
 			$parent_model = $model::findOne(['id' => $this_model->parent->id]);
 			$parent_id    = $parent_model->parent->id;
-			if($parent_id != 0) {
+			if($parent_id != 0 || $parent_id != NULL) {
+				$r_arr = ArrayHelper::merge($r_arr, [$this_model->parent->id, $parent_model->parent->id]);
 				$r_arr = ArrayHelper::merge($r_arr, $this->getParentIds($parent_id, $r_arr, $model));
 			}
 			else {
@@ -289,7 +288,8 @@
 		}
 		/**
 		 * Получаем значение параметра конкретной модели по алиасу
-		 * @param $alias string
+		 * @param $alias string string
+		 * @param $relations_model_name string
 		 * @return mixed
 		 */
 		public function getChildOptionValueByAlias($alias, $relations_model_name = 'Cats-Items') {

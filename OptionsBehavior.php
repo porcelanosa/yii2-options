@@ -139,7 +139,9 @@
 		
 		/**
 		 * Определяем есть ли такой статус и если есть, то возвращаем его
+		 *
 		 * @param $option_id integer
+		 *
 		 * @return mixed
 		 */
 		public function getOptionValueById(
@@ -155,47 +157,53 @@
 						'model'     => $this->model_name,
 						'option_id' => $option_id
 					]
-				)->one();
+				)->one()
+			;
 			
 			return $option['value'];
 			
 		}
+		
 		/**
 		 * Получаем значение параметра конкретной модели по алиасу
+		 *
 		 * @param $alias string
+		 *
 		 * @return mixed
 		 */
-		public function getOptionValueByAlias($alias) {
+		public function getOptionValueByAlias( $alias ) {
 			/**
 			 * @var $optionList OptionsList
-			 * @var $option Options
-			*/
-			$optionList = OptionsList::find()->where(['alias'=>$alias])->one();
-			$option = Options::find()
-				->where(
-					[
-						'model_id'  => $this->owner->id,
-						'model'     => $this->model_name,
-						'option_id' => $optionList->id
-					]
-				)->one();
-			if(in_array($optionList->type->alias, MyHelper::TYPES_WITH_PRESET_ARRAY)) {
-				$return = $optionList->preset->value($option->value);
-			}
-			elseif(in_array($optionList->type->alias, MyHelper::TYPES_WITH_MULTIPLE_PRESET_ARRAY)) {
+			 * @var $option     Options
+			 */
+			$optionList = OptionsList::find()->where( [ 'alias' => $alias ] )->one();
+			$option     = Options::find()
+			                     ->where(
+				                     [
+					                     'model_id'  => $this->owner->id,
+					                     'model'     => $this->model_name,
+					                     'option_id' => $optionList->id
+				                     ]
+			                     )->one()
+			;
+			if ( in_array( $optionList->type->alias, MyHelper::TYPES_WITH_PRESET_ARRAY ) ) {
+				$return = $optionList->preset->value( $option->value );
+			} elseif ( in_array( $optionList->type->alias, MyHelper::TYPES_WITH_MULTIPLE_PRESET_ARRAY ) ) {
 				$optionM = OptionMultiple::find()->where( [ 'value' => $option->value ] )->one();
-				$return = $optionList->preset->value($optionM->value);
-			}
-			else {
+				$return  = $optionList->preset->value( $optionM->value );
+			} else {
 				$return = $option->value;
 			}
+			
 			return $return;
 			
 		}
 		
 		/**
 		 * Определяем есть ли такой статус и если есть, то возвращаем его
+		 *
 		 * @param $option_id integer
+		 *
 		 * @return mixed
 		 */
 		public function getOptionValueByOptionId(
@@ -229,9 +237,7 @@
 		 *
 		 * @return mixed
 		 */
-		public function getOptionMultipleValueByOptionId(
-			$option_id
-		) {
+		public function getOptionMultipleValueByOptionId($option_id) {
 			$return_array = [ ];
 			$options      = OptionMultiple::find()
 			                              ->select( 'value' )
@@ -239,8 +245,8 @@
 				                              [
 					                              'option_id' => $option_id
 				                              ]
-			                              )->asArray()->all()
-			;
+			                              )->asArray()->all();
+			
 			foreach ( $options as $option ) {
 				$return_array[] = $option['value'];
 			}
@@ -314,17 +320,16 @@
 		/**
 		 * @return \yii\db\ActiveQuery
 		 */
-		public
-		function getOptionsList() {
+		public function getOptionsList() {
 			$options = OptionsList::find()
 			                      ->where(
 				                      [
 					                      'model' => $this->model_name,
 					                      //'model_id' => $this->id
 				                      ]
-			                      )->all()
+			                      )
+			                      ->all()
 			;
-			
 			
 			return $options;
 		}

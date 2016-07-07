@@ -63,6 +63,7 @@
 		public function getOptionPresetValues() {
 			return $this->hasMany( OptionPresetValues::className(), [ 'preset_id' => 'id' ] )->where( [ 'active' => 1 ] )->orderBy( [ 'sort' => SORT_ASC ] );
 		}
+		
 		/**
 		 * @return string
 		 */

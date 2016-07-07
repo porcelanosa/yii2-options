@@ -30,7 +30,7 @@
 		/** @var string */
 		public $behaviorName;
 		
-		/** @var OptionsBehavior Model of gallery to manage */
+		/** @var ChildOptionsBehavior Model of gallery to manage */
 		protected $behavior;
 		
 		public $options = array();

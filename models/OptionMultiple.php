@@ -41,6 +41,14 @@
 		}
 		
 		/**
+		 * @return \yii\db\ActiveQuery
+		 */
+		public function getOption() {
+			return $this->hasOne( Options::className(), [ 'id' => 'option_id' ] );
+		}
+		
+		
+		/**
 		 * @inheritdoc
 		 * @return \porcelanosa\yii2options\models\query\OptionMultipleQuery the active query used by this AR class.
 		 */

@@ -93,8 +93,16 @@
 		}
 		
 		/**
+		 * @return \yii\db\ActiveQuery
+		 */
+		public function getOptions() {
+			return $this->hasMany( Options::className(), [ 'option_id' => 'id' ] );
+		}
+		
+		
+		/**
 		 * @inheritdoc
-		 * @return \porcelanosa\yii2options\models\OptionsListQuery the active query used by this AR class.
+		 * @return \porcelanosa\yii2options\models\query\OptionsListQuery the active query used by this AR class.
 		 */
 		public static function find() {
 			return new \porcelanosa\yii2options\models\query\OptionsListQuery( get_called_class() );

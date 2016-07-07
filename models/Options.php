@@ -45,6 +45,21 @@
 		}
 		
 		/**
+		 * @return \yii\db\ActiveQuery
+		 * Возвращает список значений если есть
+		 */
+		public function getMultipleOptions() {
+			return $this->hasMany( OptionMultiple::className(), [ 'option_id' => 'id' ] );
+		}
+		
+		/**
+		 * @return \yii\db\ActiveQuery
+		 */
+		public function getOptionsList() {
+			return $this->hasOne( Options::className(), [ 'id' => 'option_id' ] );
+		}
+		
+		/**
 		 * @inheritdoc
 		 * @return \porcelanosa\yii2options\models\query\OptionsQuery the active query used by this AR class.
 		 */
