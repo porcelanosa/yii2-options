@@ -1,5 +1,5 @@
 **WARNING! UNDER DEVELOPMENT**
-
+[![Total Downloads](https://poser.pugx.org/porcelanosa/yii2-options/downloads)](https://packagist.org/packages/porcelanosa/yii2-options)
 Installation
 ============
 
