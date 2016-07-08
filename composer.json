@@ -1,6 +1,6 @@
 {
   "name": "porcelanosa/yii2-options",
-  "description": "Yii2 Extenstion",
+  "description": "Yii2 Extenstion for set options",
   "version": "dev-master",
   "keywords": [
     "yii",
@@ -26,7 +26,7 @@
   },
   "autoload": {
     "psr-4": {
-      "porcelanosa\\yii2Options\\": ""
+      "porcelanosa\\yii2options\\": ""
     }
   },
 
