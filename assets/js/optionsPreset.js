@@ -23,32 +23,29 @@ var vmPresets = new Vue({
     // Methods we want to use in our application are registered here
     methods: {
         fetchPresets: function () {
-            this.$http.post('/options/presetapi/presets', {id: presetId}, function (data, status, request) {
-                // set data on vm
-                this.$set('presets', data);
-
-            }).then(function () {
-                    //this.sort();
-                    this.showPreseList = true;
-                    $('#presets-list').show();
-                    //console.log(this.newPreset)
-                },
-                function (error) {
-                    console.log(error);
-                }
-            );
-
+            this.$http
+                .post('/options/presetapi/presets', {id: presetId})
+                .then(
+                    function (responce) {
+                        this.$set('presets', responce.data);
+                        this.showPresetList = true;
+                        $('#presets-list').show();
+                    },
+                    function (response) {
+                        console.log(error);
+                        }
+                    );
 
         },
         addPreset: function (event) {
             event.preventDefault();
-            this.$http.post('/options/presetapi/create', this.newPreset, function (data, status, request) {
-                console.log(data);
-                vmPresets.newPreset.id = data.id;
-            }).then(
+            this.$http
+                .post('/options/presetapi/create', this.newPreset)
+                .then(
                     function (response) {
-
+                        console.log(response)
                         //  Вставляем в массив значений
+                        vmPresets.newPreset.id = response.data.id;
                         this.presets.push(vmPresets.newPreset);
                         this.sort();
                         // обнуляем значения формы
@@ -71,13 +68,15 @@ var vmPresets = new Vue({
             event.preventDefault();
             if (preset.id) {
                 this.$http.put('/options/presetapi/update/' + preset.id, preset)
-                    .success(function (response) {
-                        this.edited = false;
-                        this.editedPreset = null;
-                        // this.fetchEvents();
-                    }).error(function (error) {
-                    console.log(error);
-                });
+                    .then(
+                        function (response) {
+                            this.edited = false;
+                            this.editedPreset = null;
+                            // this.fetchEvents();
+                        },
+                        function (error) {
+                            console.log(error);
+                    });
             }
         },
         editPreset: function (preset) {
@@ -87,7 +86,8 @@ var vmPresets = new Vue({
         },
         removePreset: function (preset) {
             if (confirm("Вы уверены что хотите удалить этот значение?")) {
-                this.$http.delete('/options/presetapi/delete/' + preset.id, this.block)
+                this.$http
+                    .delete('/options/presetapi/delete/' + preset.id, this.block)
                     .then(
                         function (response) {
                             this.presets.$remove(preset);
