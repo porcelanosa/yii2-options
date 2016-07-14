@@ -4,7 +4,7 @@ Installation
 ============
 
 This document will guide you through the process of installing yii2-options using **composer**. Installation is a quick and
-easy three-step process.
+easy several step process.
 
 > **NOTE:** Before we start make sure that you have properly configured **db** application component.
 
