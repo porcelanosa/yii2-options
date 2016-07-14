@@ -8,6 +8,7 @@
 	use porcelanosa\yii2options\models\OptionPresetValues;
 	use porcelanosa\yii2options\models\RichTexts;
 	use Yii;
+	use yii\base\InvalidConfigException;
 	use yii\behaviors\AttributeBehavior;
 	
 	use yii\db\ActiveRecord;
@@ -24,7 +25,8 @@
 		extends AttributeBehavior {
 		
 		public $model_name = '';
-		public $uploadImagePath = '/uploads/items/';
+		public $uploadImagePath = ''; // '@webroot/uploads/cats/' alias of upload folder
+		public $uploadImageUrl = ''; // '@web/uploads/cats/' alias of upload folder
 		
 		public function events() {
 			return [
@@ -36,6 +38,18 @@
 			
 			$model = $this->owner;
 			
+			if ( ! isset( $this->uploadImagePath ) || $this->uploadImagePath == '' ) {
+				throw new InvalidConfigException(
+					"The 'uploadImagePath' option is required. For example, ',
+					'uploadImagePath' => '@webroot/uploads/cats/'"
+				);
+			}
+			if ( ! isset( $this->uploadImageUrl ) || $this->uploadImageUrl == '' ) {
+				throw new InvalidConfigException(
+					"The 'uploadImageUrl' option is required. For example, ',
+					'uploadImageUrl' => '@web/uploads/cats/'"
+				);
+			}
 			//  обрабатываем поля статусов
 			foreach ( $this->getOptionsList() as $option ) {
 				$option_name     = trim( str_replace( ' ', '_', $option->alias ) );
@@ -46,10 +60,21 @@
 				if ( $option_type == 'image' ) {
 					$image = UploadedFile::getInstanceByName( $option_name );
 					if ( $image ) {
-						$imageName = md5( $image->baseName . time() ) . '.' . $image->extension;
-						$fullPath  = $this->uploadImagePath . $imageName;
-						if ( $image->saveAs( ltrim( $fullPath, '/' ) ) ) {
-							$postOptinonName = $fullPath;
+						$filename = basename( $image->name, ".{$image->extension}" );
+						
+						// generate a unique file name
+						$imageName = "{$filename}-" . Yii::$app->security->generateRandomString( 8 ) . ".{$image->extension}";
+						
+						$path = $this->uploadImagePath;
+						$url = $this->uploadImageUrl;
+						if ( ! is_dir( $path ) ) {
+							mkdir( $path, 0777, true );
+						}
+						
+						$fullPath = $path . $imageName;
+						$fullUrl = $url . $imageName;
+						if ( $image->saveAs( $fullPath) ) {
+							$postOptinonName = $fullUrl;
 						};
 					}
 				}
@@ -58,7 +83,8 @@
 				
 				if ( ! $is_exist_status ) { // ДОБАВЛЯЕМ если нет
 					Yii::$app->db->createCommand()
-					             ->insert( 'options',
+					             ->insert(
+						             'options',
 						             [
 							             'value'     => $postOptinonName,
 							             'model'     => $this->model_name,
@@ -77,7 +103,8 @@
 				} else {
 					// ОБНОВЛЯЕМ если есть
 					Yii::$app->db->createCommand()
-					             ->update( 'options',
+					             ->update(
+						             'options',
 						             [ 'value' => $postOptinonName ],
 						             [
 							             'model'     => $this->model_name,
@@ -86,10 +113,12 @@
 						             ]
 					             )->execute()
 					;
-					$opt = Options::findOne( [
-						'model_id'  => $model->id,
-						'option_id' => $option->id,
-					] );
+					$opt = Options::findOne(
+						[
+							'model_id'  => $model->id,
+							'option_id' => $option->id,
+						]
+					);
 					$this->setMultipleOptions( $option_type, $option_name, $opt->id );
 					// Сохранение richText and simple textarea
 					if ( $option_type == 'richtext' OR $option_type == 'textarea' ) {
@@ -237,7 +266,7 @@
 		 *
 		 * @return mixed
 		 */
-		public function getOptionMultipleValueByOptionId($option_id) {
+		public function getOptionMultipleValueByOptionId( $option_id ) {
 			$return_array = [ ];
 			$options      = OptionMultiple::find()
 			                              ->select( 'value' )
@@ -245,7 +274,8 @@
 				                              [
 					                              'option_id' => $option_id
 				                              ]
-			                              )->asArray()->all();
+			                              )->asArray()->all()
+			;
 			
 			foreach ( $options as $option ) {
 				$return_array[] = $option['value'];

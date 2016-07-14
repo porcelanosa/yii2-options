@@ -78,9 +78,10 @@ public function behaviors()
 {
     return [
         'optionsBehavior' => [
-            'class' => OptionsBehavior::className(),
-            'model_name' => MyHelper::modelFromNamespace($this::className()), // convert className to model name without namespace
-            'uploadImagePath' => '/uploads/items/'
+           'class' => OptionsBehavior::className(),
+           'model_name' => MyHelper::modelFromNamespace($this::className()), // convert className to model name without namespace
+           'uploadImagePath' => Yii::getAlias( '@webroot' ) . '/uploads/cats/', // alias of upload folder
+           'uploadImageUrl' => Yii::getAlias( '@web' ) . '/uploads/cats/', // alias of upload folder
         ],
 }
 ```

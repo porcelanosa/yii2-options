@@ -232,8 +232,22 @@
 					if ( $optionList->type->alias == 'image' ) {
 						if ( MyHelper::IFF( $value ) ) {
 							$this->options_string .= Html::img( $value, [ 'style' => 'width: 100px; height:auto;' ] );
-							$this->options_string .= '<br>';
+							$delimage_link_anchor = Yii::t('app', 'Delete image');
+							$this->options_string .= <<<HTML
+							<br>
+							<a href="" id="delimg-{$option_name}-{$this->model->id}">$delimage_link_anchor</a>
+							<br>
+HTML;
+							$delimage_script = <<<JS
+				$("#delimg-{$option_name}-{$this->model->id}").on('click', function() {
+				  
+				})
+JS;
+							$view2 = $this->getView();
+							$view2->registerJs($delimage_script, $view2::POS_READY, "delimg-{$option_name}-{$this->model->id}");
+
 						}
+						
 						$this->options_string .=
 							'<label>&nbsp;' . $optionList->name . '</label>' .
 							Html::fileInput(

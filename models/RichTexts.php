@@ -2,6 +2,7 @@
 	
 	namespace porcelanosa\yii2options\models;
 	
+	use porcelanosa\yii2options\models\query\RichTextsQuery;
 	use Yii;
 	
 	/**
@@ -45,9 +46,9 @@
 		
 		/**
 		 * @inheritdoc
-		 * @return \app\modules\admin\models\query\RichTextsQuery the active query used by this AR class.
+		 * @return RichTextsQuery the active query used by this AR class.
 		 */
 		public static function find() {
-			return new \app\modules\admin\models\query\RichTextsQuery( get_called_class() );
+			return new RichTextsQuery( get_called_class() );
 		}
 	}
