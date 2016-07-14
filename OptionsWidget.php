@@ -228,31 +228,63 @@
 								]
 							);
 					}
-					/*  Изображение */
+					/*  IMAGE Изображение */
 					if ( $optionList->type->alias == 'image' ) {
+						
+						$this->options_string .= <<<HTML
+						<div style="margin-bottom: 20px; padding: 5px; border: 1px solid rgba(166, 166, 166, 0.71)">
+							<label>&nbsp;$optionList->name</label><br>
+HTML;
+						// Если есть изображение, то показываем его Show image if exist
 						if ( MyHelper::IFF( $value ) ) {
-							$this->options_string .= Html::img( $value, [ 'style' => 'width: 100px; height:auto;' ] );
+							$this->options_string .= Html::img( $value, [
+								'style' => 'width: 100px; height:auto;',
+								'id' => "img-{$option_name}-{$this->model->id}",
+							] );
+							
 							$delimage_link_anchor = Yii::t('app', 'Delete image');
 							$this->options_string .= <<<HTML
-							<br>
+							<div id="linkblock-{$option_name}-{$this->model->id}">
 							<a href="" id="delimg-{$option_name}-{$this->model->id}">$delimage_link_anchor</a>
-							<br>
+							</div>
 HTML;
 							$delimage_script = <<<JS
-				$("#delimg-{$option_name}-{$this->model->id}").on('click', function() {
-				  
-				})
+								
+								$("#delimg-{$option_name}-{$this->model->id}").on('click', function(e) {
+								    e.preventDefault();
+								    var option_id = "{$optionList->id}"; 
+								    var model_id = "{$this->model->id}"; 
+								    var model_name = "{$this->behavior->model_name}"; 
+								    var url = '/options/delimage';
+								    $.ajax(
+								        url,
+								        {
+								            type: 'POST',
+								            dataType: 'json',
+								            data: {model_id: model_id, model_name: model_name, option_id: option_id},
+								            success: function(data) {
+								              if(data.success) {
+								                  $("#img-{$option_name}-{$this->model->id}").remove();
+								                  $("#linkblock-{$option_name}-{$this->model->id}").remove();
+								              }
+								            }
+								        }
+								    )
+								})
 JS;
-							$view2 = $this->getView();
-							$view2->registerJs($delimage_script, $view2::POS_READY, "delimg-{$option_name}-{$this->model->id}");
+							$view = $this->getView();
+							$view->registerJs($delimage_script, $view::POS_READY, "delimg-{$option_name}-{$this->model->id}");
 
 						}
-						
+ 
 						$this->options_string .=
-							'<label>&nbsp;' . $optionList->name . '</label>' .
 							Html::fileInput(
 								$option_name
 							);
+						
+						$this->options_string .= <<<HTML
+							</div>
+HTML;
 					}
 				}
 			}
