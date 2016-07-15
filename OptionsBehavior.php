@@ -82,8 +82,7 @@
 						if ( $image->saveAs( $fullPath ) ) {
 							$postOptinonName = $fullUrl;
 							/* delete old image */
-							$old_image_path = Yii::getAlias( '@root' ) . $old_image;
-							//var_dump( $old_image_path );
+							$old_image_path = $path.str_replace($url,'', $old_image);
 							if ( file_exists( $old_image_path ) AND is_file( $old_image_path ) ) {
 								unlink( $old_image_path );
 							}
