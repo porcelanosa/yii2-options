@@ -52,16 +52,19 @@
 			}
 			//  обрабатываем поля статусов
 			foreach ( $this->getOptionsList() as $option ) {
-				$option_name     = trim( str_replace( ' ', '_', $option->alias ) );
-				$option_type     = $option->type->alias;
-				if(null != Yii::$app->request->post($option_name)) {
-					$postOptinonName = Yii::$app->request->post($option_name)? Yii::$app->request->post($option_name) : 0;
+				$option_name = trim( str_replace( ' ', '_', $option->alias ) );
+				$option_type = $option->type->alias;
+				if ( NULL != Yii::$app->request->post( $option_name ) ) {
+					$postOptinonName = Yii::$app->request->post( $option_name ) ? Yii::$app->request->post( $option_name ) : 0;
 				}
+				// Есть ли такой статус ???
+				$is_exist_status = $this->ifOptionExist( $option->id );
+				
 				// Если есть изображение загружаем
 				if ( $option_type == 'image' ) {
 					$image = UploadedFile::getInstanceByName( $option_name );
 					if ( $image ) {
-						$old_image = $model->getOptionValueByAlias($option_name);
+						$old_image = ( $is_exist_status ) ? $model->getOptionValueByAlias( $option_name ) : '';
 						
 						$filename = basename( $image->name, ".{$image->extension}" );
 						
@@ -69,28 +72,25 @@
 						$imageName = "{$filename}-" . Yii::$app->security->generateRandomString( 8 ) . ".{$image->extension}";
 						
 						$path = $this->uploadImagePath;
-						$url = $this->uploadImageUrl;
+						$url  = $this->uploadImageUrl;
 						if ( ! is_dir( $path ) ) {
 							mkdir( $path, 0777, true );
 						}
 						
 						$fullPath = $path . $imageName;
-						$fullUrl = $url . $imageName;
-						if ( $image->saveAs( $fullPath) ) {
+						$fullUrl  = $url . $imageName;
+						if ( $image->saveAs( $fullPath ) ) {
 							$postOptinonName = $fullUrl;
 							/* delete old image */
-							$old_image_path =Yii::getAlias('@root').$old_image;
-							if(MyHelper::IFF($old_image_path) ){
-								var_dump($old_image_path);
-								unlink($old_image_path);
+							$old_image_path = Yii::getAlias( '@root' ) . $old_image;
+							//var_dump( $old_image_path );
+							if ( file_exists( $old_image_path ) AND is_file( $old_image_path ) ) {
+								unlink( $old_image_path );
 							}
 						};
 					}
 				}
-				// Есть ли такой статус ???
-				$is_exist_status = $this->ifOptionExist( $option->id );
-				
-				if ( ! $is_exist_status && isset($postOptinonName)) { // ДОБАВЛЯЕМ если нет
+				if ( ! $is_exist_status && isset( $postOptinonName ) ) { // ДОБАВЛЯЕМ если нет
 					Yii::$app->db->createCommand()
 					             ->insert(
 						             'options',
@@ -109,7 +109,7 @@
 						$this->setRichtextOptions( $last_insert_option_id, $postOptinonName );
 					}
 					
-				} elseif(isset($postOptinonName)) {
+				} elseif ( isset( $postOptinonName ) ) {
 					// ОБНОВЛЯЕМ если есть
 					Yii::$app->db->createCommand()
 					             ->update(
