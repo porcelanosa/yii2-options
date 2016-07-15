@@ -37,6 +37,6 @@ class VueResourceAsset extends AssetBundle
     ];
 
     public $depends = [
-        'app\assets\VuejsAsset',
+        'porcelanosa\yii2options\assets\VuejsAsset',
     ];
 }

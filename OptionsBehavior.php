@@ -54,12 +54,15 @@
 			foreach ( $this->getOptionsList() as $option ) {
 				$option_name     = trim( str_replace( ' ', '_', $option->alias ) );
 				$option_type     = $option->type->alias;
-				$postOptinonName = $_POST[ $option_name ] ? $_POST[ $option_name ] : 0;
-				
+				if(null != Yii::$app->request->post($option_name)) {
+					$postOptinonName = Yii::$app->request->post($option_name)? Yii::$app->request->post($option_name) : 0;
+				}
 				// Если есть изображение загружаем
 				if ( $option_type == 'image' ) {
 					$image = UploadedFile::getInstanceByName( $option_name );
 					if ( $image ) {
+						$old_image = $model->getOptionValueByAlias($option_name);
+						
 						$filename = basename( $image->name, ".{$image->extension}" );
 						
 						// generate a unique file name
@@ -75,13 +78,19 @@
 						$fullUrl = $url . $imageName;
 						if ( $image->saveAs( $fullPath) ) {
 							$postOptinonName = $fullUrl;
+							/* delete old image */
+							$old_image_path =Yii::getAlias('@root').$old_image;
+							if(MyHelper::IFF($old_image_path) ){
+								var_dump($old_image_path);
+								unlink($old_image_path);
+							}
 						};
 					}
 				}
 				// Есть ли такой статус ???
 				$is_exist_status = $this->ifOptionExist( $option->id );
 				
-				if ( ! $is_exist_status ) { // ДОБАВЛЯЕМ если нет
+				if ( ! $is_exist_status && isset($postOptinonName)) { // ДОБАВЛЯЕМ если нет
 					Yii::$app->db->createCommand()
 					             ->insert(
 						             'options',
@@ -100,7 +109,7 @@
 						$this->setRichtextOptions( $last_insert_option_id, $postOptinonName );
 					}
 					
-				} else {
+				} elseif(isset($postOptinonName)) {
 					// ОБНОВЛЯЕМ если есть
 					Yii::$app->db->createCommand()
 					             ->update(

@@ -55,41 +55,6 @@
 		
 		/** Render widget */
 		public function run() {
-			/*if ($this->apiRoute === null) {
-				throw new Exception('$apiRoute must be set.', 500);
-			}*/
-			
-			/*$images = array();
-			foreach ($this->behavior->getImages() as $image) {
-				$images[] = array(
-					'id' => $image->id,
-					'rank' => $image->rank,
-					'name' => (string)$image->name,
-					'description' => (string)$image->description,
-					'preview' => $image->getUrl('preview'),
-				);
-			}
-	
-			$baseUrl = [
-				$this->apiRoute,
-				'type' => $this->behavior->type,
-				'behaviorName' => $this->behaviorName,
-				'galleryId' => $this->behavior->getGalleryId()
-			];
-	
-			$opts = array(
-				'hasName' => $this->behavior->hasName ? true : false,
-				'hasDesc' => $this->behavior->hasDescription ? true : false,
-				'uploadUrl' => Url::to($baseUrl + ['action' => 'ajaxUpload']),
-				'deleteUrl' => Url::to($baseUrl + ['action' => 'delete']),
-				'updateUrl' => Url::to($baseUrl + ['action' => 'changeData']),
-				'arrangeUrl' => Url::to($baseUrl + ['action' => 'order']),
-				'nameLabel' => Yii::t('galleryManager/main', 'Name'),
-				'descriptionLabel' => Yii::t('galleryManager/main', 'Description'),
-				'photos' => $images,
-			);
-	
-			$opts = Json::encode($opts);*/
 			
 			if ( $this->behavior->getOptionsList() AND is_array( $this->behavior->getOptionsList() ) ) {
 				foreach ( $this->model->optionsList as $optionList ) {

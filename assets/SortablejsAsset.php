@@ -9,7 +9,7 @@ use yii\web\AssetBundle;
 
 class SortablejsAsset extends AssetBundle
 {
-    public $sourcePath = '@bower/Sortable';
+    public $sourcePath = '@bower/sortablejs';
 
     public $css = [
         //'foundation.min.css',
