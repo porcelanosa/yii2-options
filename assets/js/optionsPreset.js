@@ -32,7 +32,7 @@ var vmPresets = new Vue({
                         $('#presets-list').show();
                     },
                     function (response) {
-                        console.log(error);
+                        console.log(response.error);
                         }
                     );
 
@@ -43,7 +43,6 @@ var vmPresets = new Vue({
                 .post('/options/presetapi/create', this.newPreset)
                 .then(
                     function (response) {
-                        console.log(response)
                         //  Вставляем в массив значений
                         vmPresets.newPreset.id = response.data.id;
                         this.presets.push(vmPresets.newPreset);
