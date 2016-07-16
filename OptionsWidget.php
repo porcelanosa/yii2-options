@@ -200,6 +200,7 @@
 						<div style="margin-bottom: 20px; padding: 5px; border: 1px solid rgba(166, 166, 166, 0.71)">
 							<label>&nbsp;$optionList->name</label><br>
 HTML;
+						
 						// Если есть изображение, то показываем его Show image if exist
 						if ( MyHelper::IFF( $value ) ) {
 							$this->options_string .= Html::img( $value, [

@@ -57,7 +57,7 @@
 					'option_id'=> $option_id,
 				])->one();
 				
-				if(unlink(Yii::getAlias('@root').$option->value)){
+				if(unlink($_SERVER['DOCUMENT_ROOT'].$option->value)){
 					if($option->delete()){
 						$success = true;
 					}
