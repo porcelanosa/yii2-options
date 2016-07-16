@@ -14,6 +14,7 @@
 	use yii\db\ActiveRecord;
 	
 	
+	use yii\db\Exception;
 	use yii\helpers\ArrayHelper;
 	use yii\web\UploadedFile;
 	
@@ -53,9 +54,36 @@
 			//  обрабатываем поля статусов
 			foreach ( $this->getOptionsList() as $option ) {
 				$option_name = trim( str_replace( ' ', '_', $option->alias ) );
-				$option_type = $option->type->alias;
-				if ( NULL != Yii::$app->request->post( $option_name ) ) {
-					$postOptinonName = Yii::$app->request->post( $option_name ) ? Yii::$app->request->post( $option_name ) : 0;
+				$option_type = $option->type->alias; //  option alias - псевдоним параметра
+				$post_value  = Yii::$app->request->post( $option_name ); // POST value - переданное значение
+				
+				if ( NULL != $post_value ) {
+					$postOptionName = $post_value != '' ? $post_value : '';
+				} else {
+					$postOptionName = NULL;
+				}
+				// If empty value for multiple options delete option
+				if ( $postOptionName == NULL AND in_array( $option_type, MyHelper::TYPES_WITH_MULTIPLE_PRESET_ARRAY ) ) {
+					/**
+					 * @var $for_delete_opt Options
+					 */
+					$for_delete_opt = Options::find()->where(
+						[
+							'model'     => $this->model_name,
+							'model_id'  => $model->id,
+							'option_id' => $option->id,
+						]
+					)->one()
+					;
+					$curent_options = OptionMultiple::find()->where( [ 'option_id' => $for_delete_opt->id ] )->all();
+					
+					foreach ( $curent_options as $c_opt ) {
+						$c_opt->delete();
+					}
+					// Удаляем, если нашли // Delete if exist
+					if ( $for_delete_opt ) {
+						$for_delete_opt->delete();
+					}
 				}
 				// Есть ли такой статус ???
 				$is_exist_status = $this->ifOptionExist( $option->id );
@@ -80,7 +108,7 @@
 						$fullPath = $path . $imageName;
 						$fullUrl  = $url . $imageName;
 						if ( $image->saveAs( $fullPath ) ) {
-							$postOptinonName = $fullUrl;
+							$postOptionName = $fullUrl;
 							/* delete old image */
 							$old_image_path = $path . str_replace( $url, '', $old_image );
 							if ( file_exists( $old_image_path ) AND is_file( $old_image_path ) ) {
@@ -89,53 +117,57 @@
 						};
 					}
 				}
-				if ( ! $is_exist_status && isset( $postOptinonName ) ) { // ДОБАВЛЯЕМ если нет
-					Yii::$app->db->createCommand()
-					             ->insert(
-						             'options',
-						             [
-							             'value'     => $postOptinonName,
-							             'model'     => $this->model_name,
-							             'model_id'  => $model->id,
-							             'option_id' => $option->id,
-						             ]
-					             )->execute()
-					;
-					$last_insert_option_id = Yii::$app->db->getLastInsertID();
-					$this->setMultipleOptions( $option_type, $option_name, $last_insert_option_id );
-					// Сохранение richText and simple textarea
-					if ( $option_type == 'richtext' OR $option_type == 'textarea' ) {
-						$this->setRichtextOptions( $last_insert_option_id, $postOptinonName );
-					}
+				// ДОБАВЛЯЕМ Options если нет options
+				if ( ! $is_exist_status && isset( $postOptionName ) ) {
+					$current_opt            = new Options();
+					$current_opt->value     = is_array( $postOptionName ) ? $postOptionName[0] : $postOptionName;
+					$current_opt->model     = $this->model_name;
+					$current_opt->model_id  = $model->id;
+					$current_opt->option_id = $option->id;
+					if ( $current_opt->save() ) {
+						// Сохранение полей с множеством значений
+						if ( in_array( $option_type, MyHelper::TYPES_WITH_MULTIPLE_PRESET_ARRAY ) ) {
+							$this->setMultipleOptions( $option_type, $option_name, $current_opt->id );
+						}
+						// Сохранение richText and simple textarea
+						if ( $option_type == 'richtext' OR $option_type == 'textarea' ) {
+							$this->setRichtextOptions( $postOptionName, $current_opt->id );
+						}
+					};
 					
-				} elseif ( isset( $postOptinonName ) ) {
-					// ОБНОВЛЯЕМ если есть
-					Yii::$app->db->createCommand()
-					             ->update(
-						             'options',
-						             [ 'value' => $postOptinonName ],
-						             [
-							             'model'     => $this->model_name,
-							             'model_id'  => $model->id,
-							             'option_id' => $option->id,
-						             ]
-					             )->execute()
-					;
-					$opt = Options::findOne(
+				} // ОБНОВЛЯЕМ если есть
+				elseif ( isset( $postOptionName ) ) {
+					/**
+					 * @var $current_opt Options
+					 */
+					$current_opt        = Options::find()->where(
 						[
+							'model'     => $this->model_name,
 							'model_id'  => $model->id,
 							'option_id' => $option->id,
 						]
-					);
-					$this->setMultipleOptions( $option_type, $option_name, $opt->id );
-					// Сохранение richText and simple textarea
-					if ( $option_type == 'richtext' OR $option_type == 'textarea' ) {
-						$this->setRichtextOptions( $option->id, $postOptinonName );
+					)->one()
+					;
+					$current_opt->value = is_array( $postOptionName ) ? $postOptionName[0] : $postOptionName;
+					if ( $current_opt->save() ) {
+						//  Обновление полей с множественными значениями
+						if ( in_array( $option_type, MyHelper::TYPES_WITH_MULTIPLE_PRESET_ARRAY ) ) {
+							$this->setMultipleOptions( $option_type, $option_name, $current_opt->id );
+						}
+						// Обновление richText and simple textarea
+						if ( $option_type == 'richtext' OR $option_type == 'textarea' ) {
+							$this->setRichtextOptions( $postOptionName, $current_opt->id );
+						}
 					}
 				}
 			}
 		}
 		
+		/**
+		 * @param $option_type string
+		 * @param $option_name string
+		 * @param $option_id   integer
+		 */
 		protected function setMultipleOptions( $option_type, $option_name, $option_id ) {
 			if ( in_array( $option_type, MyHelper::TYPES_WITH_MULTIPLE_PRESET_ARRAY ) ) {
 				$option_array = Yii::$app->request->post( $option_name );
@@ -147,6 +179,10 @@
 					$curent_options = OptionMultiple::find()->where( [ 'option_id' => $option_id ] )->all();
 					foreach ( $curent_options as $c_opt ) {
 						$c_opt->delete();
+						/*
+						 * @TODO Delete only necessary
+						 * if ( ! in_array( $c_opt->value, $option_array ) ) {
+						}*/
 					}
 					foreach ( $option_array as $option_value ) {
 						$newOptionMultiple            = new OptionMultiple();
@@ -158,7 +194,11 @@
 			}
 		}
 		
-		protected function setRichtextOptions( $option_id, $text ) {
+		/**
+		 * @param $text      string
+		 * @param $option_id integer
+		 */
+		protected function setRichtextOptions( $text, $option_id ) {
 			
 			// удаляем все значения с этим option_id
 			$currentRichText = RichTexts::find()->where( [ 'option_id' => $option_id ] )->one();
@@ -179,25 +219,23 @@
 		 *
 		 * @param $option_id integer
 		 *
-		 * @return mixed
+		 * @return string
 		 */
-		public function getOptionValueById(
-			$option_id
-		) {
-			
-			$option = ( new \yii\db\Query() )
-				->select( 'value' )
-				->from( 'options' )
-				->where(
-					[
-						'model_id'  => $this->owner->id,
-						'model'     => $this->model_name,
-						'option_id' => $option_id
-					]
-				)->one()
+		public function getOptionValueById( $option_id ) {
+			/**
+			 * @var $option Options
+			 */
+			$option = Options::find()
+			                 ->where(
+				                 [
+					                 'model_id'  => $this->owner->id,
+					                 'model'     => $this->model_name,
+					                 'option_id' => $option_id
+				                 ]
+			                 )->one()
 			;
 			
-			return $option['value'];
+			return $option ? $option->value : '';
 			
 		}
 		
@@ -297,30 +335,28 @@
 		}
 		
 		/**
-		 * Определяем есть ли у работы этот статус ВООБЩЕ
+		 * Определяем есть ли у модели этот параметр ВООБЩЕ
 		 *
-		 * @param $status_name
+		 * @param $option_id int
 		 *
 		 * @return boolean
 		 */
-		public function ifOptionExist(
-			$option_id
-		) {
+		public function ifOptionExist( $option_id ) {
 			
-			$option = ( new \yii\db\Query() )
-				->select( [ 'value' ] )
-				->from( 'options' )
-				->where(
-					[
-						'model'     => $this->model_name,
-						'model_id'  => $this->owner->id,
-						'option_id' => $option_id
-					]
-				)
-				->one()
+			$option = Options::find()
+			                 ->select( [ 'value' ] )
+			                 ->where(
+				                 [
+					                 'model'     => $this->model_name,
+					                 'model_id'  => $this->owner->id,
+					                 'option_id' => $option_id
+				                 ]
+			                 )
+			                 ->asArray()
+			                 ->one()
 			;
 			
-			if ( count( $option['value'] ) == 0 ) {
+			if ( $option == NULL ) {
 				return false;
 			} else {
 				return true;
@@ -359,14 +395,13 @@
 		
 		
 		/**
-		 * @return \yii\db\ActiveQuery
+		 * @return OptionsList[]
 		 */
 		public function getOptionsList() {
 			$options = OptionsList::find()
 			                      ->where(
 				                      [
-					                      'model' => $this->model_name,
-					                      //'model_id' => $this->id
+					                      'model' => $this->model_name
 				                      ]
 			                      )
 			                      ->all()

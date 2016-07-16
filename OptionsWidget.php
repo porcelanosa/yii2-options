@@ -58,11 +58,13 @@
 			
 			if ( $this->behavior->getOptionsList() AND is_array( $this->behavior->getOptionsList() ) ) {
 				foreach ( $this->model->optionsList as $optionList ) {
-					$option      = Options::findOne( [
-						'model'     => $this->behavior->model_name,
-						'model_id'  => $this->model->id,
-						'option_id' => $optionList->id
-					] );
+					$option      = Options::findOne(
+						[
+							'model'     => $this->behavior->model_name,
+							'model_id'  => $this->model->id,
+							'option_id' => $optionList->id
+						]
+					);
 					$option_name = trim( str_replace( ' ', '_', $optionList->alias ) );
 					$value       = $this->behavior->getOptionValueById( $optionList->id );
 					
@@ -71,10 +73,12 @@
 						$this->options_string .=
 							'<div class="checkbox">
 							<label>' .
-							Html::checkbox( $option_name, $value ? $value : 0, [
+							Html::checkbox(
+								$option_name, $value ? $value : 0, [
 								'id'    => $option_name,
 								'class' => 'i-check'
-							] ) . '
+							]
+							) . '
 									&nbsp;' . $optionList->name .
 							'</label>
 					    </div>';
@@ -83,40 +87,38 @@
 						
 						$this->options_string .=
 							'<label>&nbsp;' . $optionList->name . '</label>' .
-							Html::textInput( $option_name, $value ? $value : 0, [
+							Html::textInput(
+								$option_name, $value ? $value : 0, [
 								'id'    => $option_name,
 								'class' => 'form-control'
-							] );
+							]
+							);
 					}
 					if ( $optionList->type->alias == 'textarea' ) {
 						
+						$textarea = RichTexts::find()->where( [ 'option_id' => $option->id ] )->one();
 						$this->options_string .=
-							'<label>&nbsp;' . $optionList->name . '</label>' .
-							Html::textarea( $option_name, $value ? $value : 0, [
-								'id'    => $option_name,
-								'class' => 'form-control'
-							] );
+							$this->render(
+							'@vendor/porcelanosa/yii2-options/views/_partials/_textarea',
+							[
+								'option_name'   => $option_name,
+								'optionList'    => $optionList,
+								'richTextValue' => $textarea->text,
+							]
+						);
 					}
 					if ( $optionList->type->alias == 'richtext' ) {
-						$richText =  RichTexts::find()->where( [ 'option_id' => $optionList->id ] )->one();
-						$richTextValue = $richText!=null?$richText->text:'';
+						$richText      = RichTexts::find()->where( [ 'option_id' => $option->id ] )->one();
+						$richTextValue = $richText != NULL ? $richText->text : '';
 						$this->options_string .=
-							'<label>&nbsp;' . $optionList->name . '</label>' .
-							Html::textarea( $option_name, $richTextValue, [
-								'id' => $option_name,
-								//'class' => 'form-control'
-							] ) .
-							Redactor::widget( [
-								'selector' => '#' . $option_name,
-								'settings' => [
-									'lang'      => 'ru',
-									'minHeight' => 200,
-									'plugins'   => [
-										'clips',
-										'fullscreen'
-									]
+							$this->render(
+								'@vendor/porcelanosa/yii2-options/views/_partials/_rich_text',
+								[
+									'option_name'   => $option_name,
+									'optionList'    => $optionList,
+									'richTextValue' => $richTextValue,
 								]
-							] );
+							);
 					}
 					if ( $optionList->type->alias == 'dropdown' ) {
 						// получаем фабрики
@@ -128,10 +130,12 @@
 							ArrayHelper::merge( [ 'null' => 'Выберите ' . mb_strtolower( $optionList->name ) ], $status_preset_items );
 						$this->options_string .=
 							'<label>&nbsp;' . $optionList->name . '</label>' .
-							Html::dropDownList( $option_name, $value ? $value : NULL, $status_preset_items, [
+							Html::dropDownList(
+								$option_name, $value ? $value : NULL, $status_preset_items, [
 								'id'    => $option_name,
 								'class' => 'form-control'
-							] );
+							]
+							);
 					}
 					if ( $optionList->type->alias == 'radiobuton_list' ) {
 						
@@ -143,14 +147,20 @@
 						$status_preset_items = ArrayHelper::map( $status_preset_values, 'id', 'value' );
 						$this->options_string .=
 							'<label>&nbsp;' . $optionList->name . '</label>' .
-							Html::radioList( $option_name, $value ? $value : NULL, $status_preset_items, [
+							Html::radioList(
+								$option_name, $value ? $value : NULL, $status_preset_items, [
 								'id'    => $option_name,
 								'class' => 'form-control'
-							] );
+							]
+							);
 					}
 					if ( $optionList->type->alias == 'dropdown-multiple' ) {
 						//  получаем список значений для мульти селектед
-						$multipleValuesArray = $this->behavior->getOptionMultipleValueByOptionId( $option->id );
+						if ( $option ) {
+							$multipleValuesArray = $this->behavior->getOptionMultipleValueByOptionId( $option->id );
+						} else {
+							$multipleValuesArray = [ ];
+						}
 						// получаем фабрики
 						$status_preset_values =
 							OptionPresetValues::find()->where( [ 'preset_id' => $optionList->preset->id ] )->orderBy( 'sort' )->all();
@@ -173,25 +183,33 @@
 					/*  Список checkboxes  */
 					if ( $optionList->type->alias == 'checkboxlist-multiple' ) {
 						//  получаем список значений для мульти селектед
-						$multipleValuesArray = $this->behavior->getOptionMultipleValueByOptionId( $option->id );
+						$multipleValuesArray = ( $option ) ? $this->behavior->getOptionMultipleValueByOptionId( $option->id ) : [ ];
 						// получаем фабрики
 						$status_preset_values =
 							OptionPresetValues::find()->where( [ 'preset_id' => $optionList->preset->id ] )->orderBy( 'sort' )->all();
 						// формируем массив, с ключем равным полю 'id' и значением равным полю 'name'
 						$status_preset_items = ArrayHelper::map( $status_preset_values, 'id', 'value' );
 						
+						$this->options_string .= <<<HTML
+						<div style="margin-bottom: 20px; padding: 5px; border: 1px solid rgba(166, 166, 166, 0.71)">
+							<label>&nbsp;$optionList->name</label><br>
+HTML;
+						
 						$this->options_string .=
-							'<label>&nbsp;' . $optionList->name . '</label>' .
 							Html::checkboxList(
 								$option_name,
 								$multipleValuesArray,
 								$status_preset_items,
 								[
-									'id'       => $option_name,
-									'class'    => 'form-control',
-									'multiple' => 'true'
+									'id'          => $option_name,
+									'class'       => 'form-control',
+									'multiple'    => 'true',
+									'itemOptions' => [ 'class' => 'i-check', 'style' => 'display:inline-block' ]
 								]
 							);
+						$this->options_string .= <<<HTML
+							</div>
+HTML;
 					}
 					/*  IMAGE Изображение */
 					if ( $optionList->type->alias == 'image' ) {
@@ -203,12 +221,14 @@ HTML;
 						
 						// Если есть изображение, то показываем его Show image if exist
 						if ( MyHelper::IFF( $value ) ) {
-							$this->options_string .= Html::img( $value, [
+							$this->options_string .= Html::img(
+								$value, [
 								'style' => 'width: 100px; height:auto;',
-								'id' => "img-{$option_name}-{$this->model->id}",
-							] );
+								'id'    => "img-{$option_name}-{$this->model->id}",
+							]
+							);
 							
-							$delimage_link_anchor = Yii::t('app', 'Delete image');
+							$delimage_link_anchor = Yii::t( 'app', 'Delete image' );
 							$this->options_string .= <<<HTML
 							<div id="linkblock-{$option_name}-{$this->model->id}">
 							<a href="" id="delimg-{$option_name}-{$this->model->id}">$delimage_link_anchor</a>
@@ -238,11 +258,11 @@ HTML;
 								    )
 								})
 JS;
-							$view = $this->getView();
-							$view->registerJs($delimage_script, $view::POS_READY, "delimg-{$option_name}-{$this->model->id}");
-
+							$view            = $this->getView();
+							$view->registerJs( $delimage_script, $view::POS_READY, "delimg-{$option_name}-{$this->model->id}" );
+							
 						}
- 
+						
 						$this->options_string .=
 							Html::fileInput(
 								$option_name
