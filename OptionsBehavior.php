@@ -90,17 +90,17 @@
 					}
 				}
 				if ( ! $is_exist_status && isset( $postOptinonName ) ) { // ДОБАВЛЯЕМ если нет
-					Yii::$app->db->createCommand()
-					             ->insert(
-						             'options',
-						             [
-							             'value'     => $postOptinonName,
-							             'model'     => $this->model_name,
-							             'model_id'  => $model->id,
-							             'option_id' => $option->id,
-						             ]
-					             )->execute()
-					;
+					
+					Yii::$app->db->createCommand()->insert(
+						'{{%options}}',
+				             [
+					             'value'     => $postOptinonName,
+					             'model'     => $this->model_name,
+					             'model_id'  => $model->id,
+					             'option_id' => $option->id,
+				             ]
+			             )->execute();
+					
 					$last_insert_option_id = Yii::$app->db->getLastInsertID();
 					$this->setMultipleOptions( $option_type, $option_name, $last_insert_option_id );
 					// Сохранение richText and simple textarea
@@ -112,7 +112,7 @@
 					// ОБНОВЛЯЕМ если есть
 					Yii::$app->db->createCommand()
 					             ->update(
-						             'options',
+						             '{{%options}}',
 						             [ 'value' => $postOptinonName ],
 						             [
 							             'model'     => $this->model_name,

@@ -66,7 +66,24 @@ var vmPresets = new Vue({
 
             event.preventDefault();
             if (preset.id) {
-                this.$http.put('/options/presetapi/update/' + preset.id, preset)
+                var this_ = this;
+                $.ajax({
+                    data: {id: preset.id, presetdata: preset},
+                    type: 'POST',
+                    dataType: 'json',
+                    url: '/options/presetapi/updatevalue',
+                    success: function (data) {
+
+                        console.log(data.success);
+                        if(data.success)
+                        {
+                            this_.edited = false;
+                            this_.editedPreset = null;
+                        }
+                    }
+                });
+                /*this.$http
+                    .put('/options/presetapi/update/' + preset.id, preset)
                     .then(
                         function (response) {
                             this.edited = false;
@@ -75,7 +92,7 @@ var vmPresets = new Vue({
                         },
                         function (error) {
                             console.log(error);
-                    });
+                    });*/
             }
         },
         editPreset: function (preset) {
@@ -85,17 +102,33 @@ var vmPresets = new Vue({
         },
         removePreset: function (preset) {
             if (confirm("Вы уверены что хотите удалить этот значение?")) {
-                this.$http
-                    .delete('/options/presetapi/delete/' + preset.id, this.block)
-                    .then(
-                        function (response) {
-                            this.presets.$remove(preset);
-                            this.sort();
-                        }
-                        , function (response) {
+                if (preset.id) {
+                    var this_preset = this.presets;
+                    $.ajax({
+                        data: {id: preset.id},
+                        type: 'POST',
+                        dataType: 'json',
+                        url: '/options/presetapi/deletevalue',
+                        success: function (data) {
 
+                            console.log(data.success);
+                            if(data.success)
+                            {
+                                this_preset.$remove(preset);
+                            }
                         }
-                    )
+                    });
+                    /*this.$http
+                        .delete('/options/presetapi/delete/' + preset.id, this.block)
+                        .then(
+                            function (response) {
+                                this.sort();
+                            }
+                            , function (response) {
+
+                            }
+                        )*/
+                }
             }
         },
         sort: function () {

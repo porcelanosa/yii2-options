@@ -47,7 +47,15 @@ Add options module to both web and console config files as follows:
 ],
 ...
 ```
-
+Configure request parser
+```php
+'components'     => [
+    'request' => [
+        'parsers' => [
+            'application/json' => 'yii\web\JsonParser',
+        ]
+    ],
+```
 
 Step 3: Updating database schema
 --------------------------------

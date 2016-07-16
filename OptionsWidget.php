@@ -5,6 +5,7 @@
 	use porcelanosa\yii2options\components\helpers\MyHelper;
 	use porcelanosa\yii2options\models\OptionPresetValues;
 	use porcelanosa\yii2options\models\Options;
+	use porcelanosa\yii2options\models\OptionsList;
 	use porcelanosa\yii2options\models\RichTexts;
 	use Yii;
 	use yii\base\Exception;
@@ -58,6 +59,10 @@
 			
 			if ( $this->behavior->getOptionsList() AND is_array( $this->behavior->getOptionsList() ) ) {
 				foreach ( $this->model->optionsList as $optionList ) {
+					/**
+					 * @var $optionList OptionsList
+					 * @var $option Options
+					 */
 					$option      = Options::findOne( [
 						'model'     => $this->behavior->model_name,
 						'model_id'  => $this->model->id,
@@ -172,17 +177,23 @@
 					}
 					/*  Список checkboxes  */
 					if ( $optionList->type->alias == 'checkboxlist-multiple' ) {
+						
 						//  получаем список значений для мульти селектед
-						$multipleValuesArray = $this->behavior->getOptionMultipleValueByOptionId( $option->id );
+						$multipleValuesArray = $this->behavior->getOptionMultipleValueByOptionId(
+							$optionList->id
+						);
 						// получаем фабрики
 						$status_preset_values =
 							OptionPresetValues::find()->where( [ 'preset_id' => $optionList->preset->id ] )->orderBy( 'sort' )->all();
 						// формируем массив, с ключем равным полю 'id' и значением равным полю 'name'
 						$status_preset_items = ArrayHelper::map( $status_preset_values, 'id', 'value' );
 						
-						$this->options_string .=
-							'<label>&nbsp;' . $optionList->name . '</label>' .
-							Html::checkboxList(
+						$this->options_string .= <<<HTML
+						<div style="margin-bottom: 20px; padding: 5px; border: 1px solid rgba(166, 166, 166, 0.71)">
+							<label>&nbsp; $optionList->name </label>
+HTML;
+						
+						$this->options_string .=	Html::checkboxList(
 								$option_name,
 								$multipleValuesArray,
 								$status_preset_items,
@@ -192,6 +203,10 @@
 									'multiple' => 'true'
 								]
 							);
+						$this->options_string .= <<<HTML
+							</div>
+HTML;
+						
 					}
 					/*  IMAGE Изображение */
 					if ( $optionList->type->alias == 'image' ) {

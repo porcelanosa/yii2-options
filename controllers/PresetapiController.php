@@ -5,6 +5,7 @@
 	use porcelanosa\yii2options\models\OptionPresetValues;
 	use yii\rest\ActiveController;
 	use yii\web\ForbiddenHttpException;
+	use Yii;
 	
 	class PresetapiController extends ActiveController {
 		
@@ -15,16 +16,16 @@
 			
 			return parent::beforeAction( $action );
 		}
-		
+		/*
 		public function accessRules() {
 			return array(
 				array(
 					'allow',
-					'actions' => array( 'presets' ),
+					'actions' => array( 'presets' , 'create', 'update', 'delete'),
 					'users'   => array( '*' ),
 				),
 			);
-		}
+		}*/
 		public function actions() {
 			return [
 				'presets' => [
@@ -32,13 +33,12 @@
 					'modelClass'          => $this->modelClass,
 					'checkAccess'         => [ $this, 'checkAccess' ],
 					'prepareDataProvider' => function ( $action ) {
-						$id = \Yii::$app->request->post( 'id' );
+						$id = Yii::$app->request->post( 'id' );
 						/**
 						 * @var $preset OptionPresets
 						 */
 						$preset = OptionPresets::find()->where( [ 'id' => $id ] )->one();
-						
-						return ($preset!=null)?$preset->optionPresetValues:[];
+						return $preset?$preset->optionPresetValues:[];
 						
 					}
 				],
@@ -70,7 +70,38 @@
 			];
 		}
 		
-		
+		public function actionDeletevalue(){
+			$responce = false;
+			$id = Yii::$app->request->post( 'id' );
+			//$data = Yii::$app->request->post( 'data' );
+			/**
+			 * @var $value OptionPresetValues
+			 **/
+			$value = OptionPresetValues::find()->where( [ 'id' => $id ] )->one();
+			if($value)
+				{
+					$value->delete();
+					$responce = true;
+				}
+			echo json_encode( ['success' => $responce ]);
+		}
+		public function actionUpdatevalue(){
+			$responce = false;
+			$id = Yii::$app->request->post( 'id' );
+			$data = Yii::$app->request->post( 'presetdata' );
+			/**
+			 * @var $value OptionPresetValues
+			 **/
+			$value = OptionPresetValues::find()->where( [ 'id' => $id ] )->one();
+			if($value)
+				{
+					$value->value = ($data['value']!='')?$data['value']:$value->value;
+					if($value->save()){
+						$responce = true;
+					}
+				}
+			echo json_encode( ['success' => $responce ]);
+		}
 		public function actionSort() {
 			if ( isset( $_POST['sort'] ) && is_array( $_POST['sort'] ) ) {
 				$i = 0;
@@ -97,9 +128,9 @@
 		 * @param array $params additional parameters
 		 * @throws ForbiddenHttpException if the user does not have access
 		 */
-		public function checkAccess($action, $model = null, $params = [])
+		/*public function checkAccess($action, $model = null, $params = [])
 		{
 			return true;
-		}
+		}*/
 		
 	}
