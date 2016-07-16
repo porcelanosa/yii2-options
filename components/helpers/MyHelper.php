@@ -40,7 +40,8 @@
 
 
 		public static function getModelFrontName($model_name) {
-			$mn = self::ADMIN_MODEL_NAMESPACE . $model_name;
+			$modelNamespace = Yii::$app->getModule('options')->modelNamespace;
+			$mn =  $modelNamespace . $model_name;
 			$m  = new $mn();
 
 			return $m->modelFrontName;
@@ -52,9 +53,11 @@
 		 * @return string
 		 */
 		public static function getComplexModelChildName($model_name) {
+			$modelNamespace = Yii::$app->getModule('options')->modelNamespace;
+			
 			list($parentModelClearName, $childModelClearName) = explode('-', $model_name);
-			$parentModelName  = self::ADMIN_MODEL_NAMESPACE . $parentModelClearName;
-			$childModelName   = self::ADMIN_MODEL_NAMESPACE . $childModelClearName;
+			$parentModelName  = $modelNamespace . $parentModelClearName;
+			
 			$parentModel      = new $parentModelName();
 			$childModelsArray = $parentModel->childModels;
 
@@ -67,9 +70,9 @@
 		 * @return string
 		 */
 		public static function getComplexModelChildValue($model_name) {
+			$modelNamespace = Yii::$app->getModule('options')->modelNamespace;
 			list($parentModelClearName, $childModelClearName) = explode('-', $model_name);
-			$parentModelName  = self::ADMIN_MODEL_NAMESPACE . $parentModelClearName;
-			$childModelName   = self::ADMIN_MODEL_NAMESPACE . $childModelClearName;
+			$parentModelName  = $modelNamespace . $parentModelClearName;
 			$parentModel      = new $parentModelName();
 			$childModelsArray = $parentModel->childModels;
 

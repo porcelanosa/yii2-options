@@ -3,7 +3,7 @@
 	use yii\helpers\Html;
 	use yii\grid\GridView;
 	use yii\widgets\Pjax;
-	use     \app\components\helpers\MyHelper;
+	use porcelanosa\yii2options\components\helpers\MyHelper;
 	use porcelanosa\yii2options\models\OptionsList;
 	use porcelanosa\yii2options\models\OptionTypes;
 	/* @var $this yii\web\View */
@@ -91,7 +91,7 @@
 					return $type->name;
 				},
 			],
-			'active',
+			//'active',
 			// 'sort',
 			// 'type_id',
 

@@ -98,11 +98,11 @@
 							] );
 					}
 					if ( $optionList->type->alias == 'richtext' ) {
-						$richText = RichTexts::findOne( [ 'option_id' => $optionList->id ] );
-						
+						$richText =  RichTexts::find()->where( [ 'option_id' => $optionList->id ] )->one();
+						$richTextValue = $richText!=null?$richText->text:'';
 						$this->options_string .=
 							'<label>&nbsp;' . $optionList->name . '</label>' .
-							Html::textarea( $option_name, $richText->text, [
+							Html::textarea( $option_name, $richTextValue, [
 								'id' => $option_name,
 								//'class' => 'form-control'
 							] ) .

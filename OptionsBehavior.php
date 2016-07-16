@@ -82,7 +82,7 @@
 						if ( $image->saveAs( $fullPath ) ) {
 							$postOptinonName = $fullUrl;
 							/* delete old image */
-							$old_image_path = $path.str_replace($url,'', $old_image);
+							$old_image_path = $path . str_replace( $url, '', $old_image );
 							if ( file_exists( $old_image_path ) AND is_file( $old_image_path ) ) {
 								unlink( $old_image_path );
 							}
@@ -214,26 +214,29 @@
 			 * @var $option     Options
 			 */
 			$optionList = OptionsList::find()->where( [ 'alias' => $alias ] )->one();
-			$option     = Options::find()
-			                     ->where(
-				                     [
-					                     'model_id'  => $this->owner->id,
-					                     'model'     => $this->model_name,
-					                     'option_id' => $optionList->id
-				                     ]
-			                     )->one()
-			;
-			if ( in_array( $optionList->type->alias, MyHelper::TYPES_WITH_PRESET_ARRAY ) ) {
-				$return = $optionList->preset->value( $option->value );
-			} elseif ( in_array( $optionList->type->alias, MyHelper::TYPES_WITH_MULTIPLE_PRESET_ARRAY ) ) {
-				$optionM = OptionMultiple::find()->where( [ 'value' => $option->value ] )->one();
-				$return  = $optionList->preset->value( $optionM->value );
+			if ( $optionList ) {
+				$option = Options::find()
+				                 ->where(
+					                 [
+						                 'model_id'  => $this->owner->id,
+						                 'model'     => $this->model_name,
+						                 'option_id' => $optionList->id
+					                 ]
+				                 )->one()
+				;
+				if ( in_array( $optionList->type->alias, MyHelper::TYPES_WITH_PRESET_ARRAY ) ) {
+					$return = $optionList->preset->value( $option->value );
+				} elseif ( in_array( $optionList->type->alias, MyHelper::TYPES_WITH_MULTIPLE_PRESET_ARRAY ) ) {
+					$optionM = OptionMultiple::find()->where( [ 'value' => $option->value ] )->one();
+					$return  = $optionList->preset->value( $optionM->value );
+				} else {
+					$return = $option->value;
+				}
+				
+				return $return;
 			} else {
-				$return = $option->value;
+				return false;
 			}
-			
-			return $return;
-			
 		}
 		
 		/**
