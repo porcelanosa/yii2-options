@@ -59,7 +59,6 @@
 			
 			if ( $this->behavior->getOptionsList() AND is_array( $this->behavior->getOptionsList() ) ) {
 				foreach ( $this->model->optionsList as $optionList ) {
-<<<<<<< HEAD
 					$option      = Options::findOne(
 						[
 							'model'     => $this->behavior->model_name,
@@ -67,7 +66,6 @@
 							'option_id' => $optionList->id
 						]
 					);
-=======
 					/**
 					 * @var $optionList OptionsList
 					 * @var $option Options
@@ -77,7 +75,6 @@
 						'model_id'  => $this->model->id,
 						'option_id' => $optionList->id
 					] );
->>>>>>> 8abd804df1b0de2766da13655daa33a535212504
 					$option_name = trim( str_replace( ' ', '_', $optionList->alias ) );
 					$value       = $this->behavior->getOptionValueById( $optionList->id );
 					
@@ -197,13 +194,11 @@
 					if ( $optionList->type->alias == 'checkboxlist-multiple' ) {
 						
 						//  получаем список значений для мульти селектед
-<<<<<<< HEAD
 						$multipleValuesArray = ( $option ) ? $this->behavior->getOptionMultipleValueByOptionId( $option->id ) : [ ];
-=======
+
 						$multipleValuesArray = $this->behavior->getOptionMultipleValueByOptionId(
 							$optionList->id
 						);
->>>>>>> 8abd804df1b0de2766da13655daa33a535212504
 						// получаем фабрики
 						$status_preset_values =
 							OptionPresetValues::find()->where( [ 'preset_id' => $optionList->preset->id ] )->orderBy( 'sort' )->all();
@@ -212,18 +207,10 @@
 						
 						$this->options_string .= <<<HTML
 						<div style="margin-bottom: 20px; padding: 5px; border: 1px solid rgba(166, 166, 166, 0.71)">
-<<<<<<< HEAD
 							<label>&nbsp;$optionList->name</label><br>
 HTML;
 						
-						$this->options_string .=
-							Html::checkboxList(
-=======
-							<label>&nbsp; $optionList->name </label>
-HTML;
-						
 						$this->options_string .=	Html::checkboxList(
->>>>>>> 8abd804df1b0de2766da13655daa33a535212504
 								$option_name,
 								$multipleValuesArray,
 								$status_preset_items,
@@ -237,11 +224,6 @@ HTML;
 						$this->options_string .= <<<HTML
 							</div>
 HTML;
-<<<<<<< HEAD
-=======
-						
->>>>>>> 8abd804df1b0de2766da13655daa33a535212504
-					}
 					/*  IMAGE Изображение */
 					if ( $optionList->type->alias == 'image' ) {
 						
