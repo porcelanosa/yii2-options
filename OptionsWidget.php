@@ -168,11 +168,7 @@
 					}
 					if ( $optionList->type->alias == 'dropdown-multiple' ) {
 						//  получаем список значений для мульти селектед
-						if ( $option ) {
-							$multipleValuesArray = $this->behavior->getOptionMultipleValueByOptionId( $option->id );
-						} else {
-							$multipleValuesArray = [ ];
-						}
+							$multipleValuesArray = $option?$this->behavior->getOptionMultipleValueByOptionId( $option->id ):[];
 						// получаем фабрики
 						$status_preset_values =
 							OptionPresetValues::find()->where( [ 'preset_id' => $optionList->preset->id ] )->orderBy( 'sort' )->all();
@@ -180,15 +176,13 @@
 						$status_preset_items = ArrayHelper::map( $status_preset_values, 'id', 'value' );
 						
 						$this->options_string .=
-							'<label>&nbsp;' . $optionList->name . '</label>' .
-							Html::dropDownList(
-								$option_name,
-								$multipleValuesArray,
-								$status_preset_items,
+							$this->render(
+								'@vendor/porcelanosa/yii2-options/views/_partials/_dropdown_multiple',
 								[
-									'id'       => $option_name,
-									'class'    => 'form-control',
-									'multiple' => 'true'
+									'option_name'         => $option_name,
+									'optionList'          => $optionList,
+									'multipleValuesArray' => $multipleValuesArray,
+									'status_preset_items' => $status_preset_items,
 								]
 							);
 					}

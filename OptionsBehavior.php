@@ -215,7 +215,7 @@
 		
 		
 		/**
-		 * Определяем есть ли такой статус и если есть, то возвращаем его
+		 * Get value from Options model for current model instance by $option_id
 		 *
 		 * @param $option_id integer
 		 *
