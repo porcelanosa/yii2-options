@@ -1,6 +1,5 @@
 <?
 	use yii\helpers\Html;
-	use vova07\imperavi\Widget as Redactor;
 	use porcelanosa\yii2options\models\OptionsList;
 	/**
 	 * @var $optionList OptionsList

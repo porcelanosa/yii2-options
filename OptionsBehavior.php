@@ -309,11 +309,12 @@
 		}
 		
 		/**
-		 * Определяем есть ли у работы такой статус и если есть, то возвращаем его
+		 * Возвращаем массив значений опции с множественным выбором. Т.е. если есть много значений возвращаем все в
+		 * виде массива
 		 *
 		 * @param $option_id integer
 		 *
-		 * @return mixed
+		 * @return array
 		 */
 		public function getOptionMultipleValueByOptionId( $option_id ) {
 			$return_array = [ ];
