@@ -195,7 +195,6 @@
 						
 						//  получаем список значений для мульти селектед
 						$multipleValuesArray = ( $option ) ? $this->behavior->getOptionMultipleValueByOptionId( $option->id ) : [ ];
-
 						$multipleValuesArray = $this->behavior->getOptionMultipleValueByOptionId(
 							$optionList->id
 						);
@@ -224,6 +223,7 @@ HTML;
 						$this->options_string .= <<<HTML
 							</div>
 HTML;
+					}
 					/*  IMAGE Изображение */
 					if ( $optionList->type->alias == 'image' ) {
 						
