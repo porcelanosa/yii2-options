@@ -262,13 +262,17 @@
 					                 ]
 				                 )->one()
 				;
-				if ( in_array( $optionList->type->alias, MyHelper::TYPES_WITH_PRESET_ARRAY ) ) {
-					$return = $optionList->preset->value( $option->value );
-				} elseif ( in_array( $optionList->type->alias, MyHelper::TYPES_WITH_MULTIPLE_PRESET_ARRAY ) ) {
-					$optionM = OptionMultiple::find()->where( [ 'value' => $option->value ] )->one();
-					$return  = $optionList->preset->value( $optionM->value );
+				if ( $option ) {
+					if ( in_array( $optionList->type->alias, MyHelper::TYPES_WITH_PRESET_ARRAY ) ) {
+						$return = $optionList->preset->value( $option->value );
+					} elseif ( in_array( $optionList->type->alias, MyHelper::TYPES_WITH_MULTIPLE_PRESET_ARRAY ) ) {
+						$optionM = OptionMultiple::find()->where( [ 'value' => $option->value ] )->one();
+						$return  = $optionList->preset->value( $optionM->value );
+					} else {
+						$return = $option->value;
+					}
 				} else {
-					$return = $option->value;
+					$return = '';
 				}
 				
 				return $return;
@@ -399,13 +403,16 @@
 		 * @return OptionsList[]
 		 */
 		public function getOptionsList() {
-			$options = OptionsList::find()
-			                      ->where(
-				                      [
-					                      'model' => $this->model_name
-				                      ]
-			                      )
-			                      ->all()
+			$options =
+				OptionsList::find()
+				           ->where(
+					           [
+						           'model'  => $this->model_name,
+						           'active' => 1
+					           ]
+				           )
+				           ->orderBy( 'sort' )
+				           ->all()
 			;
 			
 			return $options;

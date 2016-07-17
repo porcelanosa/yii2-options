@@ -57,6 +57,15 @@ Configure request parser
     ],
 ```
 
+Configure Karik-V module
+```php
+'modules' => [
+   'gridview' =>  [
+        'class' => '\kartik\grid\Module'
+    ]
+],
+```
+
 Step 3: Updating database schema
 --------------------------------
 After you downloaded and configured yii2-options, the last thing you need to do is updating your database schema by applying
