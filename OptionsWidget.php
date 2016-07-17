@@ -209,11 +209,6 @@
 							<label>&nbsp;$optionList->name</label><br>
 HTML;
 						
-						$this->options_string .=
-							Html::checkboxList(
-							<label>&nbsp; $optionList->name </label>
-HTML;
-						
 						$this->options_string .=	Html::checkboxList(
 								$option_name,
 								$multipleValuesArray,
