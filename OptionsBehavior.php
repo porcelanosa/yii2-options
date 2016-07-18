@@ -65,6 +65,7 @@
 				// If empty value for multiple options delete option
 				if ( $postOptionName == NULL AND in_array( $option_type, MyHelper::TYPES_WITH_MULTIPLE_PRESET_ARRAY ) ) {
 					/**
+					 * Find old options for delete
 					 * @var $for_delete_opt Options
 					 */
 					$for_delete_opt = Options::find()->where(
@@ -75,10 +76,12 @@
 						]
 					)->one()
 					;
-					$curent_options = OptionMultiple::find()->where( [ 'option_id' => $for_delete_opt->id ] )->all();
-					
-					foreach ( $curent_options as $c_opt ) {
-						$c_opt->delete();
+					if ( $for_delete_opt ) {
+						$curent_options = OptionMultiple::find()->where( [ 'option_id' => $for_delete_opt->id ] )->all();
+						
+						foreach ( $curent_options as $c_opt ) {
+							$c_opt->delete();
+						}
 					}
 					// Удаляем, если нашли // Delete if exist
 					if ( $for_delete_opt ) {
