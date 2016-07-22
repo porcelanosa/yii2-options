@@ -23,12 +23,12 @@ class m160705_125700_create_child_options_tables extends Migration
 		    'model_id' => $this->integer(),
 		    'model' => $this->string(255)->notNull(),
 		    'option_id' => $this->integer(),
-		    'value' => $this->string(255)->notNull(),
+		    'value' => $this->string(255)->null(),
 	    ], $tableOptions);
 	    $this->createTable('{{%child_option_multiple}}', [
 		    'id' => $this->primaryKey(),
 		    'option_id' => $this->integer(),
-		    'value' => $this->string(255)->notNull(),
+		    'value' => $this->string(255)->null(),
 	    ], $tableOptions);
     }
 

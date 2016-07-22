@@ -6,7 +6,7 @@ var vmOptionsCatsList = new Vue({
             name: 0,
             sort: 0
         },
-        
+
         Options: null,
         ParentOptions: null,
         CurrentOptions: null,
@@ -23,104 +23,107 @@ var vmOptionsCatsList = new Vue({
         this.model_name = document.getElementById('CatsOptionsMain').getAttribute('data-modelName');
 
         /*this.newPreset.preset_id = presetId;*/
-         this.fetchOptions();
+        this.fetchOptions();
 
     },
 
     // Methods we want to use in our application are registered here
     methods: {
         fetchOptions: function () {
-            this.$http.post('/options/catsoptions/get-options-for-child', {model_name: 'Cats-Items'}, function (data, status, request) {
-                // set data on vm
-                this.$set('Options', data);
+            this
+                .$http
+                .post('/options/catsoptions/get-options-for-child', {model_name: 'Cats-Items'})
+                .then(
+                    function (response) {
+                        // set data on vm
+                        this.$set('Options', response.data);
 
-            }).then(function () {
-                    //this.sort();
-                    this.showPreseList = true;
-                    $('#presets-list').show();
-                    //console.log(this.newPreset)
-                },
-                function (error) {
-                    console.log(error);
-                }
-            );
+                    },
+                    function (data) {
+                        //this.sort();
+                        this.showPreseList = true;
+                        $('#presets-list').show();
+                        //console.log(this.newPreset)
+                    }
+                );
 
 
         },
         selectCat: function (event) {
             $('#cat-list li').removeClass('selected-cat');
             var id = event.target.getAttribute('data-id');
-            $('#cat-list [data-id = '+id+']').addClass('selected-cat');
+            $('#cat-list [data-id = ' + id + ']').addClass('selected-cat');
 
-            if(sortableOptions.options["group"].pull == false) {
+            if (sortableOptions.options["group"].pull == false) {
                 sortableOptions.options["group"].pull = "clone"
             }
             this.currentCatId = id;
-            this.$http.post('/options/catsoptions/get-options-by-cat-id', {model_id: id}, function (data, status, request) {
-                this.$set('CurrentOptions', data);
-            }).then(function () {
-                },
-                function (error) {
-                    console.log(error);
-                }
-            );
-            this.$http.post('/options/catsoptions/get-all-parent-options', {model_id: id}, function (data, status, request) {
-                this.$set('ParentOptions', data);
-            }).then(function () {
-                },
-                function (error) {
-                    console.log(error);
-                }
-            );
+            this
+                .$http
+                .post('/options/catsoptions/get-options-by-cat-id', {model_id: id})
+                .then(
+                    function (response) {
+                        this.$set('CurrentOptions', response.data);
+                    },
+                    function () {
+                    }
+                );
+            this
+                .$http
+                .post('/options/catsoptions/get-all-parent-options', {model_id: id})
+                .then(
+                    function (response) {
+                        this.$set('ParentOptions', response.data);
+                    },
+                    function () {
+                    }
+                );
         },
 
         saveCatsOptionsList: function (optionsArray) {
             event.preventDefault();
             if (optionsArray.length > 0) {
-                this.$http.post(
-                    '/options/catsoptions/update',
-                    {
+                this
+                    .$http
+                    .post('/options/catsoptions/update', {
                         cat_id: this.currentCatId,
                         options: optionsArray
-                    },function (data, status, request) {
+                    }).then(function (response) {
                         //  Вставляем в массив Options
-                        this.CurrentOptions.push({option_id: parseInt(data.option_id)});
-                    })
-                    .then(function (response) {
+                        this.CurrentOptions.push({option_id: parseInt(response.data.option_id)});
                     },
-                    function (error) {
-
-                    });
+                    function (response) {
+                    }
+                );
             }
         },
         removeCurrOption: function (item) {
 
 
             if (confirm("Вы уверены что хотите удалить этот значение?")) {
-                this.$http.post(
+                this
+                    .$http
+                    .post(
                     '/options/catsoptions/delete-option',
                     {
                         option_id: item.option_id,
                         model_id: this.currentCatId
-                    },
-                    function (data, status, request) {
                     })
                     .then(
                         function (response) {
                             this.CurrentOptions.$remove(item);
+                        },
+                        function (response) {
                             //this.sort();
-                        }
-                        , function (response) {
-
                         }
                     )
             }
         },
         optionName: function (id) {
             /*Array.prototype.filterObjects = function(key, value) {
-                return this.filter(function(x) { return x[key] === value; })
-            }*/
-            result = this.Options.filter(function(v) {
+             return this.filter(function(x) { return x[key] === value; })
+             }*/
+            result = this.Options.filter(function (v) {
                 return v.id === id; // Filter out the appropriate one
             })[0].name; // Get result and access the foo property
             //this.Options.find(x=> x.id === id).name
@@ -129,6 +132,7 @@ var vmOptionsCatsList = new Vue({
     }
 
 });
+/*
 
 var vmOptions = new Vue({
     el: '#options-list',
@@ -147,8 +151,8 @@ var vmOptions = new Vue({
     ready: function () {
         model_name = $('#CatsOptionsMain').data('modelName');
 
-        /*this.newPreset.preset_id = presetId;
-         this.fetchPresets();*/
+        /!*this.newPreset.preset_id = presetId;
+         this.fetchPresets();*!/
 
     },
 
@@ -220,22 +224,22 @@ var vmOptions = new Vue({
                         options: optionsArray
                     },
                     function (data, status, request) {
-                        /*console.log(data);
-                         vmOptionsCatsList.newPreset.id = data.id;*/
+                        /!*console.log(data);
+                         vmOptionsCatsList.newPreset.id = data.id;*!/
                     }).then(function (response) {
 
                     },
                     function (error) {
 
                     });
-                /*this.$http.put('/options/childoptionslist/update/' + catsArray.concat(optionsArray))
+                /!*this.$http.put('/options/childoptionslist/update/' + catsArray.concat(optionsArray))
                  .success(function (response) {
                  this.edited = false;
                  this.editedPreset = null;
                  // this.fetchEvents();
                  }).error(function (error) {
                  console.log(error);
-                 });*/
+                 });*!/
             }
         },
         editPreset: function (preset) {
@@ -266,4 +270,4 @@ var vmOptions = new Vue({
             });
         }
     }
-});
+});*/

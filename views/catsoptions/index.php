@@ -1,7 +1,8 @@
 <?
 	use yii\helpers\Html;
-	use app\components\helpers\MyHelper;
+	use porcelanosa\yii2options\components\helpers\MyHelper;
 	
+	//use Yii;
 	/**
 	 * @var $optionsList       \porcelanosa\yii2options\models\OptionsList[]
 	 * @var $model_name        string
@@ -43,22 +44,22 @@
 		}
 	</style>
 <?
-	$catTree = MyHelper::getTree(MyHelper::ADMIN_MODEL_NAMESPACE . $cat_name, 'parent_id')
+	$catTree = MyHelper::getTree(Yii::$app->getModule('options')->modelNamespace. $cat_name, 'parent_id', null)
 ?>
 	<div class="row" id="CatsOptionsMain" data-modelName="<?=$model_name?>">
 
 		<div class="col-md-4">
 			<div class="row">
 				<div class="col-md-12">
-					<!--<ul id="cat-list">
-						<?/* foreach($catTree as $id => $cTr): */?>
-							<li data-id="<?/*=$id*/?>" v-on:click="selectCat">
-								<?/*=$cTr*/?>
+					<ul id="cat-list">
+						<? foreach($catTree as $id => $cTr): ?>
+							<li data-id="<?=$id?>" v-on:click="selectCat">
+								<?=$cTr?>
 							</li>
-						<?/* endforeach; */?>
-					</ul>-->
+						<? endforeach; ?>
+					</ul>
 					
-					<?=MyHelper::getTreeUL(MyHelper::ADMIN_MODEL_NAMESPACE . $cat_name, 'parent_id', 0, 'id="cat-list"', 'v-on:click="selectCat"')?>
+					<?/*=MyHelper::getTreeUL(MyHelper::ADMIN_MODEL_NAMESPACE . $cat_name, 'parent_id', 0, 'id="cat-list"', 'v-on:click="selectCat"')*/?>
 				</div>
 			</div>
 		</div>

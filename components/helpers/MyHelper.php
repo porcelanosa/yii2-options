@@ -8,7 +8,7 @@
 	use Yii;
 
 	class MyHelper {
-		const ADMIN_MODEL_NAMESPACE = 'app\modules\admin\models\\';
+		const ADMIN_MODEL_NAMESPACE = 'common\models\\';
 
 		const TYPES_WITH_PRESET_ARRAY = ['dropdown', 'radiobuton_list'];
 		const TYPES_WITH_MULTIPLE_PRESET_ARRAY = ['checkboxlist-multiple', 'dropdown-multiple'];
@@ -97,9 +97,13 @@
 		 * @return array
 		 */
 		public static function getTree($full_model_name, $parent_id_name, $parent_id = 0, $i = 0) {
+			/**
+			 * @var $full_model_name ActiveRecord
+			 */
 			$output_array = [];
 			$i            = $i * 2;
 			$roots        = $full_model_name::find()->where([$parent_id_name => $parent_id])->all();
+			
 			foreach ($roots as $root) {
 				$padding                   = str_pad('', $i, '-');
 				$output_array[ $root->id ] = $padding.$root->name;

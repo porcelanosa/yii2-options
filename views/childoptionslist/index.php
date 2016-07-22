@@ -7,7 +7,7 @@
 	 */
 ?>
 <?
-	$catTree = MyHelper::getTree(MyHelper::ADMIN_MODEL_NAMESPACE . 'Cats', 'parent_id')
+	$catTree = MyHelper::getTree(\Yii::$app->getModule('options')->modelNamespace . 'Cats', 'parent_id')
 ?>
 	<div class="row" style="height: ">
 		<div class="col-md-2">

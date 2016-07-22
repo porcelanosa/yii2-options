@@ -14,7 +14,7 @@ class m160704_165914_options_migration extends Migration
 		    'model_id' => $this->integer(),
 		    'model' => $this->string(255)->notNull(),
 		    'option_id' => $this->integer(),
-		    'value' => $this->string(255)->notNull(),
+		    'value' => $this->string(255)->null(),
 	    ], $tableOptions);
 	    $this->createTable('{{%option_types}}', [
 		    'id' => $this->primaryKey(),
@@ -26,7 +26,7 @@ class m160704_165914_options_migration extends Migration
 	    $this->createTable('{{%option_multiple}}', [
 		    'id' => $this->primaryKey(),
 		    'option_id' => $this->integer(),
-		    'value' => $this->string(255)->notNull(),
+		    'value' => $this->string(255)->null(),
 	    ], $tableOptions);
 	    $this->createTable('{{%option_presets}}', [
 		    'id' => $this->primaryKey(),

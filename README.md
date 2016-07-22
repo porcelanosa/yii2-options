@@ -96,16 +96,30 @@ public function behaviors()
     return [
         'optionsBehavior' => [
            'class' => OptionsBehavior::className(),
-           'model_name' => MyHelper::modelFromNamespace($this::className()), // convert className to model name without namespace
+           'model_name' => $this::className(), // convert className to model name without namespace
            'uploadImagePath' => Yii::getAlias( '@webroot' ) . '/uploads/cats/', // alias of upload folder
            'uploadImageUrl' => Yii::getAlias( '@web' ) . '/uploads/cats/', // alias of upload folder
         ],
 }
 ```
+For Child behavior
+for example in Items model add:
+```php
+'childOptionsBehavior' => [
+    'class' => ChildOptionsBehavior::className(),
+    'model_name' => $this::className(),
+    'parent_model_name' => 'Cats', // parent model for Items model
+    'parent_model_full_name' => '\common\models\Cats', // parent model for Items model
+    'uploadImagePath' => Yii::getAlias( '@storage' ) . '/uploads/items/', // alias of upload folder
+    'uploadImageUrl' => '/storage/uploads/items/', // Yii::getAlias( '@storageUrl' ) . alias of upload folder
+],
+```
+
 Add binding paramters
 ```php
 public $modelFrontName = 'Категории'; //if not define $modelFrontName - not show in dropdown list in optionslist controller
-		
+
+// in Parent model define Child model		
 public $childModels = [
     'Items'=>'Товары в категории',
 ];
@@ -114,13 +128,21 @@ public $childModels = [
 
 Step 5: Show options in admin view
 -----------------------------------
-```php
-<? echo
-OptionsWidget::widget(
+```php 
+<? echo \porcelanosa\yii2options\OptionsWidget::widget(
     [
         'model'        => $model,
         'behaviorName' => 'optionsBehavior'
     ] 
 );
+?>
+```
+or for Child Options
+```php	
+<? echo \porcelanosa\yii2options\ChildOptionsWidget::widget(
+    [
+        'model'        => $model,
+        'behaviorName' => 'childOptionsBehavior'
+    ] );
 ?>
 ```
