@@ -4,6 +4,7 @@
     use porcelanosa\yii2options\assets\OptionsAsset;
     use porcelanosa\yii2options\components\helpers\MyHelper;
     use porcelanosa\yii2options\models\ChildOptions;
+    use porcelanosa\yii2options\models\ChildRichTexts;
     use porcelanosa\yii2options\models\OptionPresetValues;
     use porcelanosa\yii2options\models\Options;
     use porcelanosa\yii2options\models\RichTexts;
@@ -62,7 +63,8 @@
         {
             
             $model           = $this->behavior->owner;
-            $model_name      = MyHelper::modelFromNamespace($this->behavior->model_name);
+            $model_name = MyHelper::modelFromNamespace($this->behavior->model_name);
+            $parent_model_name = MyHelper::modelFromNamespace($this->behavior->parent_model_name);
             $parent_relation = $this->behavior->parent_relation;
             $cat_id          = $model->{$parent_relation}->id;
             /**
@@ -73,11 +75,11 @@
             if ($this->behavior->getChildOptionsList($cat_id) AND is_array($this->behavior->getChildOptionsList($cat_id))) {
                 foreach ($this->behavior->getChildOptionsList($cat_id) as $optionList) {
                     $option = ChildOptions::findOne([
-                        'model'     => $model_name,
+                        'model'     => $parent_model_name.'-'.$model_name,
                         'model_id'  => $model->id,
                         'option_id' => $optionList->id
                     ]);
-                    
+    
                     $option_name       = trim(str_replace(' ', '_', $optionList->alias));
                     $value             = $this->behavior->getChildOptionValueById($optionList->id);
                     $option_type_alias = $optionList->type->alias;
@@ -101,6 +103,31 @@
                                     'option_name' => $option_name,
                                     'optionList'  => $optionList,
                                     'value'       => $value,
+                                ]
+                            );
+                    }
+                    if ($option_type_alias == 'textarea') {
+                        $textarea = $option ? ChildRichTexts::find()->where(['option_id' => $option->id])->one() : null;
+                        $this->options_string .=
+                            $this->render(
+                                '@vendor/porcelanosa/yii2-options/views/_partials/_textarea',
+                                [
+                                    'option_name'   => $option_name,
+                                    'optionList'    => $optionList,
+                                    'richTextValue' => $textarea != null ? $textarea->text : '',
+                                ]
+                            );
+                    }
+                    if ($option_type_alias == 'richtext') {
+                        
+                        $richText = $option ? ChildRichTexts::find()->where(['option_id' => $option->id])->one() : null;
+                        $this->options_string .=
+                            $this->render(
+                                '@vendor/porcelanosa/yii2-options/views/_partials/_rich_text',
+                                [
+                                    'option_name'   => $option_name,
+                                    'optionList'    => $optionList,
+                                    'richTextValue' => $richText != null ? $richText->text : '',
                                 ]
                             );
                     }

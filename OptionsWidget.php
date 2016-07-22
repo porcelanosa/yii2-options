@@ -2,6 +2,7 @@
     namespace porcelanosa\yii2options;
     
     use porcelanosa\yii2options\assets\OptionsAsset;
+    use porcelanosa\yii2options\components\helpers\MyHelper;
     use porcelanosa\yii2options\models\OptionPresetValues;
     use porcelanosa\yii2options\models\Options;
     use porcelanosa\yii2options\models\OptionsList;
@@ -58,7 +59,7 @@
         /** Render widget */
         public function run()
         {
-            
+            $model_name = MyHelper::modelFromNamespace($this->behavior->model_name);
             if ($this->behavior->getOptionsList() AND is_array($this->behavior->getOptionsList())) {
                 foreach ($this->model->optionsList as $optionList) {
                     /**
@@ -67,7 +68,7 @@
                      */
                     $option            = Options::findOne(
                         [
-                            'model'     => $this->behavior->model_name,
+                            'model'     => $model_name,
                             'model_id'  => $this->model->id,
                             'option_id' => $optionList->id
                         ]

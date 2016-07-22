@@ -99,6 +99,9 @@ public function behaviors()
            'model_name' => $this::className(), // convert className to model name without namespace
            'uploadImagePath' => Yii::getAlias( '@webroot' ) . '/uploads/cats/', // alias of upload folder
            'uploadImageUrl' => Yii::getAlias( '@web' ) . '/uploads/cats/', // alias of upload folder
+           
+            // admin application url without end slash
+            'appUrl'                 => '/backend'
         ],
 }
 ```
@@ -108,10 +111,13 @@ for example in Items model add:
 'childOptionsBehavior' => [
     'class' => ChildOptionsBehavior::className(),
     'model_name' => $this::className(),
-    'parent_model_name' => 'Cats', // parent model for Items model
-    'parent_model_full_name' => '\common\models\Cats', // parent model for Items model
+    'parent_model_name' => '\common\models\Cats',
+    // relation name for parent model, e.q. if relation function is getCat() - relation name is "cat" 
+    'parent_relation'   => 'cat',
     'uploadImagePath' => Yii::getAlias( '@storage' ) . '/uploads/items/', // alias of upload folder
     'uploadImageUrl' => '/storage/uploads/items/', // Yii::getAlias( '@storageUrl' ) . alias of upload folder
+    // admin application url without end slash
+    'appUrl'                 => '/backend'
 ],
 ```
 

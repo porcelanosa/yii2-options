@@ -15,9 +15,10 @@
     $delimage_link_anchor = Yii::t('app', 'Delete image');
     $view                 = $this_widget->getView();
     $model_name           = MyHelper::modelFromNamespace($behavior->model_name);
+    $appUrl               = $behavior->appUrl;
     if (isset($behavior->parent_model_name)) {
         if ($behavior->parent_model_name != '' OR $behavior->parent_model_name != null) {
-            $model_name = MyHelper::modelFromNamespace($behavior->parent_model_name).'-'. $model_name;
+            $model_name = MyHelper::modelFromNamespace($behavior->parent_model_name) . '-' . $model_name;
         }
     }
     
@@ -27,7 +28,7 @@
 			var option_id = "{$optionList->id}";
 			var model_id = "{$this_widget->model->id}";
 			var model_name = "{$model_name}";
-			var url = '/options/delimage';
+			var url = '{$appUrl}/options/delimage';
 			$.ajax(
 				url,
 				{

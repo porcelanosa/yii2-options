@@ -30,6 +30,7 @@
         public $uploadImagePath = ''; // '@webroot/uploads/cats/' alias of upload folder
         public $uploadImageUrl = ''; // '@web/uploads/cats/' alias of upload folder
         public $appUrl;
+        
         public function events()
         {
             return [
@@ -65,8 +66,13 @@
                 } else {
                     $postOptionName = null;
                 }
+                // If empty value for checkbox options set 0(zero) value option
+                if ($postOptionName == null AND $option_type == 'boolean') {
+                    $postOptionName = 0;
+                }
                 // If empty value for multiple options delete option
-                if ($postOptionName == null AND in_array($option_type, MyHelper::TYPES_WITH_MULTIPLE_PRESET_ARRAY)) {
+                if ($postOptionName == null AND in_array($option_type, MyHelper::TYPES_WITH_MULTIPLE_PRESET_ARRAY))
+                {
                     /**
                      * Find old options for delete
                      *
@@ -155,7 +161,7 @@
                         ]
                     )->one()
                     ;
-                    $current_opt->value = is_array($postOptionName) ? $postOptionName[0] : $postOptionName;
+                    $current_opt->value = is_array($postOptionName) ? (string)$postOptionName[0] : (string)$postOptionName;
                     if ($current_opt->save()) {
                         //  Обновление полей с множественными значениями
                         if (in_array($option_type, MyHelper::TYPES_WITH_MULTIPLE_PRESET_ARRAY)) {

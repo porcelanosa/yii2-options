@@ -10,7 +10,7 @@
     use porcelanosa\yii2options\models\OptionPresetValues;
     use porcelanosa\yii2options\models\Options;
     use porcelanosa\yii2options\models\OptionsList;
-    use porcelanosa\yii2options\models\RichTexts;
+    use porcelanosa\yii2options\models\ChildRichTexts;
     use Yii;
     use yii\base\InvalidConfigException;
     use yii\behaviors\AttributeBehavior;
@@ -35,7 +35,6 @@
         public $model_name = 'Items';
         public $options_string = '';
         public $parent_model_name = 'Cats';
-        public $parent_model_full_name = MyHelper::ADMIN_MODEL_NAMESPACE . 'Cats';
         public $parent_relation = 'cat';
         public $uploadImagePath = ''; // '@webroot/uploads/cats/' alias of upload folder
         public $uploadImageUrl = ''; // '@web/uploads/cats/' alias of upload folder;
@@ -51,9 +50,10 @@
         
         public function saveOptions()
         {
-            $model_name = MyHelper::modelFromNamespace($this->model_name);
-            $model      = $this->owner;
-            $cat_id     = $model->{$this->parent_relation}->id;
+            $model_name        = MyHelper::modelFromNamespace($this->model_name);
+            $parent_model_name = MyHelper::modelFromNamespace($this->parent_model_name);
+            $model             = $this->owner;
+            $cat_id            = $model->{$this->parent_relation}->id;
             if ( ! isset($this->uploadImagePath) || $this->uploadImagePath == '') {
                 throw new InvalidConfigException(
                     "The 'uploadImagePath' option is required. For example, ',
@@ -69,14 +69,47 @@
             
             //  обрабатываем поля статусов
             foreach ($this->getChildOptionsList($cat_id) as $option) {
-                $option_name = trim(str_replace(' ', '_', $option->alias));
+                $option_name       = trim(str_replace(' ', '_', $option->alias));
                 $option_type_alias = $option->type->alias;
-                $post_value  = Yii::$app->request->post($option_name); // POST value - переданное значение
+                $post_value        = Yii::$app->request->post($option_name); // POST value - переданное значение
                 
                 if (null != $post_value) {
                     $postOptionName = $post_value != '' ? $post_value : '';
                 } else {
                     $postOptionName = null;
+                }
+                // If empty value for checkbox options set 0(zero) value option
+                if ($postOptionName == null AND $option_type_alias == 'boolean') {
+                    $postOptionName = 0;
+                }
+                // If empty value for multiple options delete option
+                if ($postOptionName == null AND in_array($option_type_alias,
+                        MyHelper::TYPES_WITH_MULTIPLE_PRESET_ARRAY)
+                ) {
+                    /**
+                     * Find old options for delete
+                     *
+                     * @var $for_delete_opt ChildOptions
+                     */
+                    $for_delete_opt = ChildOptions::find()->where(
+                        [
+                            'model'     => $parent_model_name . '-' . $model_name,
+                            'model_id'  => $model->id,
+                            'option_id' => $option->id,
+                        ]
+                    )->one()
+                    ;
+                    if ($for_delete_opt) {
+                        $curent_options = ChildOptionMultiple::find()->where(['option_id' => $for_delete_opt->id])->all();
+                        
+                        foreach ($curent_options as $c_opt) {
+                            $c_opt->delete();
+                        }
+                    }
+                    // Удаляем, если нашли // Delete if exist
+                    if ($for_delete_opt) {
+                        $for_delete_opt->delete();
+                    }
                 }
                 // Есть ли такой статус ???
                 $is_exist_status = $this->ifOptionExist($option->id);
@@ -109,11 +142,11 @@
                         };
                     }
                 }
-                if ( ! $is_exist_status  && isset($postOptionName)) {
+                if ( ! $is_exist_status && isset($postOptionName)) {
                     // ДОБАВЛЯЕМ если нет
                     $current_opt            = new ChildOptions();
                     $current_opt->value     = is_array($postOptionName) ? $postOptionName[0] : $postOptionName;
-                    $current_opt->model     = $this->parent_model_name . '-' . $model_name;
+                    $current_opt->model     = $parent_model_name . '-' . $model_name;
                     $current_opt->model_id  = $model->id;
                     $current_opt->option_id = $option->id;
                     if ($current_opt->save()) {
@@ -127,18 +160,20 @@
                         }
                     }
                 } elseif (isset($postOptionName)) {
+                    //var_dump($postOptionName);
                     /**
                      * @var $current_opt ChildOptions
                      */
                     $current_opt        = ChildOptions::find()->where(
                         [
-                            'model'     => $this->parent_model_name . '-' . $model_name,
+                            'model'     => $parent_model_name . '-' . $model_name,
                             'model_id'  => $model->id,
                             'option_id' => $option->id,
                         ]
                     )->one()
                     ;
-                    $current_opt->value = is_array($postOptionName) ? $postOptionName[0] : $postOptionName;
+                    $current_opt->value = is_array($postOptionName) ? (string)$postOptionName[0] : (string)$postOptionName;
+                    //var_dump($current_opt->id.'--'.$current_opt->value);
                     if ($current_opt->save()) {
                         // Сохранение полей с множеством значений
                         if (in_array($option_type_alias, MyHelper::TYPES_WITH_MULTIPLE_PRESET_ARRAY)) {
@@ -182,14 +217,15 @@
          */
         public function getChildOptionValueById($option_id)
         {
-            $model_name = MyHelper::modelFromNamespace($this->model_name);
-            $option     = (new \yii\db\Query())
+            $model_name        = MyHelper::modelFromNamespace($this->model_name);
+            $parent_model_name = MyHelper::modelFromNamespace($this->parent_model_name);
+            $option            = (new \yii\db\Query())
                 ->select('value')
                 ->from('child_options')
                 ->where(
                     [
                         'model_id'  => $this->owner->id,
-                        'model'     => $this->parent_model_name . '-' . $model_name,
+                        'model'     => $parent_model_name . '-' . $model_name,
                         'option_id' => $option_id
                     ]
                 )->one()
@@ -270,13 +306,14 @@
          */
         public function ifOptionExist($option_id)
         {
-            $model_name = MyHelper::modelFromNamespace($this->model_name);
-            $option     = (new \yii\db\Query())
+            $model_name        = MyHelper::modelFromNamespace($this->model_name);
+            $parent_model_name = MyHelper::modelFromNamespace($this->parent_model_name);
+            $option            = (new \yii\db\Query())
                 ->select(['value'])
                 ->from('child_options')
                 ->where(
                     [
-                        'model'     => $this->parent_model_name . '-' . $model_name,
+                        'model'     => $parent_model_name . '-' . $model_name,
                         'model_id'  => $this->owner->id,
                         'option_id' => $option_id
                     ]
@@ -298,18 +335,19 @@
          */
         public function getChildOptionsList($cat_id)
         {
-            $model_name = MyHelper::modelFromNamespace($this->model_name);
-            $model      = new $this->parent_model_full_name();
-            $parent_ids = $this->getParentIds($cat_id, [$cat_id], $model);
-            $option_ids = ModelsOptionsList::find()
-                                           ->select('option_id')
-                                           ->where(
-                                               [
-                                                   'IN',
-                                                   'model_id',
-                                                   $parent_ids
-                                               ]
-                                           )->asArray()->all()
+            $model_name        = MyHelper::modelFromNamespace($this->model_name);
+            $parent_model_name = MyHelper::modelFromNamespace($this->parent_model_name);
+            $model             = new $this->parent_model_name();
+            $parent_ids        = $this->getParentIds($cat_id, [$cat_id], $model);
+            $option_ids        = ModelsOptionsList::find()
+                                                  ->select('option_id')
+                                                  ->where(
+                                                      [
+                                                          'IN',
+                                                          'model_id',
+                                                          $parent_ids
+                                                      ]
+                                                  )->asArray()->all()
             ;
             
             $options = OptionsList::find()
@@ -320,7 +358,7 @@
                                           $this->flatArray($option_ids, 'option_id')
                                       ]
                                   )
-                                  ->andWhere(['model' => $this->parent_model_name . '-' . $model_name,])
+                                  ->andWhere(['model' => $parent_model_name . '-' . $model_name,])
                                   ->all()
             ;
             
@@ -350,17 +388,22 @@
             /**
              * @var $model Cats
              */
-            $this_model   = $model::findOne(['id' => $cat_id]);
-            $parent_model = $model::findOne(['id' => $this_model->parent->id]);
-            
-            $parent_id            = $parent_model->parent ? $parent_model->parent->id : null;
-            $this_model_parent_id = $this_model->parent ? $this_model->parent->id : null;
-            
-            if ($parent_id != 0 || $parent_id != null) {
-                $r_arr = ArrayHelper::merge($r_arr, [$this_model_parent_id, $parent_id]);
-                $r_arr = ArrayHelper::merge($r_arr, $this->getParentIds($parent_id, $r_arr, $model));
-            } else {
-                $r_arr[] = $parent_model->id;
+            $this_model = $model::findOne(['id' => $cat_id]);
+            if ($this_model) {
+                if ($this_model->parent) {
+                    
+                    $parent_model = $model::findOne(['id' => $this_model->parent->id]);
+                    
+                    $parent_id            = $parent_model->parent ? $parent_model->parent->id : null;
+                    $this_model_parent_id = $this_model->parent ? $this_model->parent->id : null;
+                    
+                    if ($parent_id != 0 || $parent_id != null) {
+                        $r_arr = ArrayHelper::merge($r_arr, [$this_model_parent_id, $parent_id]);
+                        $r_arr = ArrayHelper::merge($r_arr, $this->getParentIds($parent_id, $r_arr, $model));
+                    } else {
+                        $r_arr[] = $parent_model->id;
+                    }
+                }
             }
             
             return $r_arr;
@@ -411,11 +454,11 @@
         {
             
             // удаляем все значения с этим option_id
-            $currentRichText = RichTexts::find()->where(['option_id' => $option_id])->one();
+            $currentRichText = ChildRichTexts::find()->where(['option_id' => $option_id])->one();
             if ($currentRichText) {
                 $currentRichText->updateAttributes(['text' => $text]);
             } else {
-                $richText            = new RichTexts();
+                $richText            = new ChildRichTexts();
                 $richText->option_id = $option_id;
                 $richText->text      = $text;
                 $richText->save();
