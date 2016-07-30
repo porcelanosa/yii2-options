@@ -14,7 +14,7 @@ Step 1: Download using composer
 
 Add yii2-options to the require section of your **composer.json** file:
 
-```js
+```PHP
 {
     "require": {
         "porcelanosa/yii2-options": "dev-master"
