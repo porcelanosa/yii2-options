@@ -21,7 +21,7 @@
     "php": ">=5.4.0",
     "yiisoft/yii2": "*",
     "vova07/yii2-imperavi-widget": "*",
-    "porcelanosa/yii2togglecolumn": "*",
+    "porcelanosa/yii2-toggle-column": "*",
     "kartik-v/yii2-grid": "@dev",
     "bower-asset/sortablejs": "*",
     "bower-asset/vue": "*",

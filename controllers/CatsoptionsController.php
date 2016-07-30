@@ -46,12 +46,13 @@
 		public function actionIndex() {
 			$modelRelation = 'Cats-Items';
 			$model_name    = 'Cats';
-			
+			$appUrl = '/backend/';
 			$cats = Cats::find()->all();
 			
 			return $this->render(
 				'index', [
 				'model_name'  => $model_name,
+				'appUrl'  => $appUrl,
 				'cats'        => $cats,
 				'optionsList' => $this->actionCommonOptionsList( $modelRelation ), //  child options
 				//'CommonOptionsList' => $this->actionCommonOptionsList($model_name) //  common options for CAts

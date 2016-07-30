@@ -16,14 +16,17 @@ var vmOptionsCatsList = new Vue({
         model_name: null,
         classSelectedCatObject: {
             'selected-cat': true
-        }
+        },
+        appUrl: '/backend/'
     },
     // Anything within the ready function will run when the application loads
     ready: function () {
         this.model_name = document.getElementById('CatsOptionsMain').getAttribute('data-modelName');
+        this.appUrl = document.getElementById('CatsOptionsMain').getAttribute('data-appUrl');
 
         /*this.newPreset.preset_id = presetId;*/
         this.fetchOptions();
+
 
     },
 
@@ -32,7 +35,7 @@ var vmOptionsCatsList = new Vue({
         fetchOptions: function () {
             this
                 .$http
-                .post('/options/catsoptions/get-options-for-child', {model_name: 'Cats-Items'})
+                .post(this.appUrl+'/options/catsoptions/get-options-for-child', {model_name: 'Cats-Items'})
                 .then(
                     function (response) {
                         // set data on vm
@@ -60,7 +63,7 @@ var vmOptionsCatsList = new Vue({
             this.currentCatId = id;
             this
                 .$http
-                .post('/options/catsoptions/get-options-by-cat-id', {model_id: id})
+                .post(this.appUrl+'/options/catsoptions/get-options-by-cat-id', {model_id: id})
                 .then(
                     function (response) {
                         this.$set('CurrentOptions', response.data);
@@ -70,7 +73,7 @@ var vmOptionsCatsList = new Vue({
                 );
             this
                 .$http
-                .post('/options/catsoptions/get-all-parent-options', {model_id: id})
+                .post(this.appUrl+'/options/catsoptions/get-all-parent-options', {model_id: id})
                 .then(
                     function (response) {
                         this.$set('ParentOptions', response.data);
@@ -85,7 +88,7 @@ var vmOptionsCatsList = new Vue({
             if (optionsArray.length > 0) {
                 this
                     .$http
-                    .post('/options/catsoptions/update', {
+                    .post(this.appUrl+'/options/catsoptions/update', {
                         cat_id: this.currentCatId,
                         options: optionsArray
                     }).then(function (response) {
@@ -104,7 +107,7 @@ var vmOptionsCatsList = new Vue({
                 this
                     .$http
                     .post(
-                    '/options/catsoptions/delete-option',
+                        this.appUrl+'/options/catsoptions/delete-option',
                     {
                         option_id: item.option_id,
                         model_id: this.currentCatId
