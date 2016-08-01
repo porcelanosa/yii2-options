@@ -41,7 +41,11 @@ Add options module to both web and console config files as follows:
         'class' => 'porcelanosa\yii2options\Module',
         'layout' => '@app/modules/admin/views/layouts/main',
         'model_path' => '@app/modules/admin/models/*.php', // models php files
-        'modelNamespace' => 'app\modules\admin\models\\' // models namespace
+        'modelNamespace' => 'app\modules\admin\models\', // models namespace
+        'fileUrl'        => '/storage/uploads/richtext/files',
+        'filePath'       => '@storage/uploads/richtext/files',
+        'imageUrl'       => '/storage/uploads/richtext/images',
+        'imagePath'      => '@storage/uploads/richtext/images',
     ],
     ...
 ],
