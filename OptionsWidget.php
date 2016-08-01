@@ -119,6 +119,7 @@
                                     'option_name'   => $option_name,
                                     'optionList'    => $optionList,
                                     'richTextValue' => $richText != null ? $richText->text : '',
+                                    'behavior'      => $this->behavior,
                                 ]
                             );
                     }

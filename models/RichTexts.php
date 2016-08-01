@@ -27,7 +27,7 @@
 		public function rules() {
 			return [
 				[ [ 'option_id' ], 'integer' ],
-				[ [ 'text' ], 'text' ],
+				[ [ 'text' ], 'string' ],
 				[ [ 'title' ], 'string', 'max' => 255 ],
 			];
 		}
