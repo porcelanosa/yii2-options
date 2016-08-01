@@ -137,6 +137,12 @@
                     $current_opt->model     = $model_name;
                     $current_opt->model_id  = $model->id;
                     $current_opt->option_id = $option->id;
+                    
+                    //  если тип текст, то сохраняем не сам текст, а тип.
+                    if ($option_type == 'richtext' OR $option_type == 'textarea') {
+                        $current_opt->value = $option_type;
+                    }
+                    
                     if ($current_opt->save()) {
                         // Сохранение полей с множеством значений
                         if (in_array($option_type, MyHelper::TYPES_WITH_MULTIPLE_PRESET_ARRAY)) {
@@ -162,6 +168,9 @@
                     )->one()
                     ;
                     $current_opt->value = is_array($postOptionName) ? (string)$postOptionName[0] : (string)$postOptionName;
+                    if ($option_type == 'richtext' OR $option_type == 'textarea') {
+                        $current_opt->value = $option_type;
+                    }
                     if ($current_opt->save()) {
                         //  Обновление полей с множественными значениями
                         if (in_array($option_type, MyHelper::TYPES_WITH_MULTIPLE_PRESET_ARRAY)) {
@@ -169,6 +178,7 @@
                         }
                         // Обновление richText and simple textarea
                         if ($option_type == 'richtext' OR $option_type == 'textarea') {
+                            //var_dump($postOptionName);
                             $this->setRichtextOptions($postOptionName, $current_opt->id);
                         }
                     }
@@ -214,11 +224,14 @@
          */
         protected function setRichtextOptions($text, $option_id)
         {
-            
             // удаляем все значения с этим option_id
             $currentRichText = RichTexts::find()->where(['option_id' => $option_id])->one();
+            
             if ($currentRichText) {
-                $currentRichText->updateAttributes(['text' => $text]);
+                //$currentRichText->updateAttributes(['text' => $text]);
+                //var_dump($currentRichText->text);
+                $currentRichText->text = $text;
+                $currentRichText->save(false);
             } else {
                 $richText            = new RichTexts();
                 $richText->option_id = $option_id;
