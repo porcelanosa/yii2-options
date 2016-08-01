@@ -10,7 +10,7 @@
 	/* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="options-list-form">
+<div class="options-list-form" id="optionForm" data-appUrl="<?=$appUrl?>">
 
 	<?php $form = ActiveForm::begin(); ?>
 

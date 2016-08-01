@@ -9,11 +9,13 @@ var vmPresets = new Vue({
         presets: Object,
         editedPreset: null,
         edited: false,
-        showPresetList: false
+        showPresetList: false,
+        appUrl: '/backend/'
     },
     // Anything within the ready function will run when the application loads
     ready: function () {
         presetId = $('#presets').data('presetid');
+        this.appUrl = document.getElementById('optionForm').getAttribute('data-appUrl');
 
         this.newPreset.preset_id = presetId;
         this.fetchPresets();
@@ -24,7 +26,7 @@ var vmPresets = new Vue({
     methods: {
         fetchPresets: function () {
             this.$http
-                .post('/options/presetapi/presets', {id: presetId})
+                .post(this.appUrl+'/options/presetapi/presets', {id: presetId})
                 .then(
                     function (responce) {
                         this.$set('presets', responce.data);
@@ -40,7 +42,7 @@ var vmPresets = new Vue({
         addPreset: function (event) {
             event.preventDefault();
             this.$http
-                .post('/options/presetapi/create', this.newPreset)
+                .post(this.appUrl+'/options/presetapi/create', this.newPreset)
                 .then(
                     function (response) {
                         //  Вставляем в массив значений
@@ -71,7 +73,7 @@ var vmPresets = new Vue({
                     data: {id: preset.id, presetdata: preset},
                     type: 'POST',
                     dataType: 'json',
-                    url: '/options/presetapi/updatevalue',
+                    url: this.appUrl+'/options/presetapi/updatevalue',
                     success: function (data) {
 
                         console.log(data.success);
@@ -108,7 +110,7 @@ var vmPresets = new Vue({
                         data: {id: preset.id},
                         type: 'POST',
                         dataType: 'json',
-                        url: '/options/presetapi/deletevalue',
+                        url: this.appUrl+'/options/presetapi/deletevalue',
                         success: function (data) {
 
                             console.log(data.success);
@@ -162,7 +164,7 @@ $(document).ready(function () {
             $.ajax({
                 data: data,
                 type: 'POST',
-                url: '/options/presetapi/sort'
+                url: this.appUrl+'/options/presetapi/sort'
             });
         }
     });
