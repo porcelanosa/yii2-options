@@ -5,7 +5,7 @@
     
     /* @var $this yii\web\View */
     /* @var $appUrl string */
-    /* @var $model app\modules\admin\models\OptionsList */
+    /* @var $model porcelanosa\yii2options\models\OptionsList */
     
     $this->title                   = Yii::t('app', 'Create Options List');
     $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Options Lists'), 'url' => ['index']];

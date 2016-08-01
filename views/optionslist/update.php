@@ -4,7 +4,7 @@
     
     /* @var $this yii\web\View */
     /* @var $appUrl string */
-    /* @var $model app\modules\admin\models\OptionsList */
+    /* @var $model porcelanosa\yii2options\models\OptionsList */
     
     $this->title                   = Yii::t('app', 'Update {modelClass}: ', [
             'modelClass' => 'Options List',
